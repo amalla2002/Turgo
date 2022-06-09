@@ -1,4 +1,3 @@
-# Turgo
 Original App Design Project - README Template
 ===
 
@@ -72,6 +71,15 @@ This app wil allow a user to upload photos, the photo will be marked on a map us
    * Rate 
    * Map Explore 
    * Profile 
+* Upload
+    * Take picture act
+* Rate
+    * Map
+* Map exlpore
+    * Start adventure
+        * On place
+* Profile
+    * Detail view
 
 ## Wireframes
 [Add picture of your hand sketched wireframes in this section]

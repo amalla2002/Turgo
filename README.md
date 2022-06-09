@@ -12,7 +12,7 @@ Original App Design Project - README Template
 
 ## Overview
 ### Description
-This app wil allow a user to upload photos, the photo will be marked on a map using the location of were the photo was taken. Other people can evaluate it by giving it a star rating 1-5. EXP can be gained from ratings
+This app wil allow a user to upload photos, the photo will be marked on a map using the location of were the photo was taken. Other people can evaluate it by giving it a star rating 1-5. 
 
 ### App Evaluation
 [Evaluation of your app across the following attributes]

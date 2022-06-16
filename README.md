@@ -87,7 +87,11 @@ This app wil allow a user to upload photos, the photo will be marked on a map us
 
 ## Schema 
 
-# Post:
+
+### Models
+
+
+Post:
 
 | Property        | Type          | Description |
 | ------------- | ------------- | ------------- |
@@ -102,7 +106,7 @@ This app wil allow a user to upload photos, the photo will be marked on a map us
 | Description  | String  | User specified description of photo |
 
 
-# User 
+User 
 
 | Property        | Type          | Description |
 | ------------- | ------------- | ------------|
@@ -118,7 +122,7 @@ This app wil allow a user to upload photos, the photo will be marked on a map us
 | password  | String  | User key to access account |
 
 
-# Map 
+Map 
 
 | Property        | Type          | Description |
 | ------------- | ------------- | ----------- |
@@ -129,8 +133,6 @@ This app wil allow a user to upload photos, the photo will be marked on a map us
 | postLocation  | GeoPoint  | Geographical points where post can be linked to |
 | popularity  | Number | Number of post submitted to a particular location |
 
-### Models
-[Add table of models]
 ### Networking
 - [Add list of network requests by screen ]
 - [Create basic snippets for each Parse network request]

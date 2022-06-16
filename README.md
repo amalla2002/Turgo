@@ -87,17 +87,7 @@ This app wil allow a user to upload photos, the photo will be marked on a map us
 
 ## Schema 
 
-### Post object has:
-----------------------------
-|objectId 		| String    |
-|updatedAt 		| Date      |
-|createdAt 		| Date      |
-|ACL 			   | ACL       |
-|Location 		| GeoPoint  |
-|Picture 		| File      |
-|Rates 			| Number    |
-|Rating 			| Number    |
-|Description 	| String    |
+# Post:
 
 | Fields        | Type          |
 | ------------- | ------------- |
@@ -105,48 +95,39 @@ This app wil allow a user to upload photos, the photo will be marked on a map us
 | updatedAt  | Date  |
 | createdAt  | Date |
 | ACL | ACL |
-| Location  | GeoPoint  |
+| location  | GeoPoint  |
 | Picture  | File  |
 | Rates  | Number |
 | Rating | Number |
 | Description  | String  |
 
 
-### User object has: 
+# User 
 
-objectId 		| String
+| Fields        | Type          |
+| ------------- | ------------- |
+| objectId  | String  |
+| authData  | Object  |
+| updatedAt  | Date |
+| createdAt | Date |
+| ACL  | ACL  |
+| emailVerified  | Boolean  |
+| email  | String |
+| Avatar | File |
+| username  | String  |
+| password  | String  |
 
-authData 		| Object
 
-updatedAt 		| Date
+# Map 
 
-createdAt 		| Date
-
-ACL 			   | ACL
-
-emailVerified 	| Boolean 
-
-email 			| String
-
-Avatar 			| File
-
-username 		| String
-
-password 		| String
-
-### Map object has: 
-
-objectId 		| String
-
-updatedAt 		| Date
-
-createdAt 		| Date
-
-ACL 			   | ACL
-
-postLocation	| GeoPoint
-
-Popularity		| Number
+| Fields        | Type          |
+| ------------- | ------------- |
+| objectId  | String  |
+| updatedAt  | Date |
+| createdAt | Date |
+| ACL  | ACL  |
+| postLocation  | GeoPoint  |
+| popularity  | Number |
 
 ### Models
 [Add table of models]

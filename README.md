@@ -87,19 +87,28 @@ This app wil allow a user to upload photos, the photo will be marked on a map us
 
 ## Schema 
 
-Post object has: 9
+### Post object has:
 
 objectId 		| String
+
 updatedAt 		| Date
+
 createdAt 		| Date
+
 ACL 			   | ACL
+
 Location 		| GeoPoint 
+
 Picture 			| File
+
 Rates 			| Number
+
 Rating 			| Number
+
 Description 	| String
 
-User object has: 10
+
+### User object has: 
 
 objectId 		| String
 
@@ -121,14 +130,20 @@ username 		| String
 
 password 		| String
 
-Map object has: 6
+### Map object has: 
 
 objectId 		| String
+
 updatedAt 		| Date
+
 createdAt 		| Date
+
 ACL 			   | ACL
+
 postLocation	| GeoPoint
+
 Popularity		| Number
+
 ### Models
 [Add table of models]
 ### Networking

@@ -102,14 +102,23 @@ Description 	| String
 User object has: 10
 
 objectId 		| String
+
 authData 		| Object
+
 updatedAt 		| Date
+
 createdAt 		| Date
+
 ACL 			   | ACL
+
 emailVerified 	| Boolean 
+
 email 			| String
+
 Avatar 			| File
+
 username 		| String
+
 password 		| String
 
 Map object has: 6

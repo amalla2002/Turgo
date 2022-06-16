@@ -88,7 +88,7 @@ This app wil allow a user to upload photos, the photo will be marked on a map us
 ## Schema 
 
 ### Post object has:
-
+----------------------------
 |objectId 		| String    |
 |updatedAt 		| Date      |
 |createdAt 		| Date      |
@@ -99,6 +99,10 @@ This app wil allow a user to upload photos, the photo will be marked on a map us
 |Rating 			| Number    |
 |Description 	| String    |
 
+| First Header  | Second Header |
+| ------------- | ------------- |
+| Content Cell  | Content Cell  |
+| Content Cell  | Content Cell  |
 
 ### User object has: 
 

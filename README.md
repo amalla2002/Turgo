@@ -86,7 +86,40 @@ This app wil allow a user to upload photos, the photo will be marked on a map us
 
 
 ## Schema 
-[This section will be completed in Unit 9]
+
+Post object has: 9
+
+objectId 		| String
+updatedAt 		| Date
+createdAt 		| Date
+ACL 			   | ACL
+Location 		| GeoPoint 
+Picture 			| File
+Rates 			| Number
+Rating 			| Number
+Description 	| String
+
+User object has: 10
+
+objectId 		| String
+authData 		| Object
+updatedAt 		| Date
+createdAt 		| Date
+ACL 			   | ACL
+emailVerified 	| Boolean 
+email 			| String
+Avatar 			| File
+username 		| String
+password 		| String
+
+Map object has: 6
+
+objectId 		| String
+updatedAt 		| Date
+createdAt 		| Date
+ACL 			   | ACL
+postLocation	| GeoPoint
+Popularity		| Number
 ### Models
 [Add table of models]
 ### Networking

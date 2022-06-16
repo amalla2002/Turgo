@@ -91,7 +91,7 @@ This app wil allow a user to upload photos, the photo will be marked on a map us
 ### Models
 
 
-Post:
+Post
 
 | Property        | Type          | Description |
 | ------------- | ------------- | ------------- |

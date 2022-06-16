@@ -100,10 +100,11 @@ Post
 | createdAt  | Date | Date of creation |
 | ACL | ACL | ACL? |
 | location  | GeoPoint  | Point where photo was taken |
-| Picture  | File  | Image to be shown |
-| Rates  | Number | Number of ratings it has received |
-| Rating | Number | Average score from ratings |
-| Description  | String  | User specified description of photo |
+| picture  | File  | Image to be shown |
+| rates  | Number | Number of ratings it has received |
+| rating | Number | Average score from ratings |
+| description  | String  | User specified description of photo |
+| user | Pointer User | Creator of the post |
 
 
 User 

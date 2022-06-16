@@ -101,16 +101,16 @@ This app wil allow a user to upload photos, the photo will be marked on a map us
 
 | Fields        | Type          |
 | ------------- | ------------- |
-| Content Cell  | Content Cell  |
-| Content Cell  | Content Cell  |
-| First Header  | Second Header |
-| ------------- | ------------- |
-| Content Cell  | Content Cell  |
-| Content Cell  | Content Cell  |
-| First Header  | Second Header |
-| ------------- | ------------- |
-| Content Cell  | Content Cell  |
-| Content Cell  | Content Cell  |
+| objectId  | String  |
+| updatedAt  | Date  |
+| createdAt  | Date |
+| ACL | ACL |
+| Location  | GeoPoint  |
+| Picture  | File  |
+| Rates  | Number |
+| Rating | Number |
+| Description  | String  |
+
 
 ### User object has: 
 

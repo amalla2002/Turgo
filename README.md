@@ -120,14 +120,14 @@ This app wil allow a user to upload photos, the photo will be marked on a map us
 
 # Map 
 
-| Property        | Type          |
-| ------------- | ------------- |
-| objectId  | String  |
-| updatedAt  | Date |
-| createdAt | Date |
-| ACL  | ACL  |
-| postLocation  | GeoPoint  |
-| popularity  | Number |
+| Property        | Type          | Description |
+| ------------- | ------------- | ----------- |
+| objectId  | String  | The id of the object |
+| updatedAt  | Date | Date of last update |
+| createdAt | Date | Date of creation |
+| ACL  | ACL  | ACL? |
+| postLocation  | GeoPoint  | Geographical points where post can be linked to |
+| popularity  | Number | Number of post submitted to a particular location |
 
 ### Models
 [Add table of models]

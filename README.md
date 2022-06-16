@@ -99,7 +99,7 @@ This app wil allow a user to upload photos, the photo will be marked on a map us
 |Rating 			| Number    |
 |Description 	| String    |
 
-| First Header  | Second Header |
+| Fields        | Type          |
 | ------------- | ------------- |
 | Content Cell  | Content Cell  |
 | Content Cell  | Content Cell  |

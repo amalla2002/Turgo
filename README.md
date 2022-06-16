@@ -89,7 +89,7 @@ This app wil allow a user to upload photos, the photo will be marked on a map us
 
 # Post:
 
-| Fields        | Type          |
+| Property        | Type          |
 | ------------- | ------------- |
 | objectId  | String  |
 | updatedAt  | Date  |
@@ -104,7 +104,7 @@ This app wil allow a user to upload photos, the photo will be marked on a map us
 
 # User 
 
-| Fields        | Type          |
+| Property        | Type          |
 | ------------- | ------------- |
 | objectId  | String  |
 | authData  | Object  |
@@ -120,7 +120,7 @@ This app wil allow a user to upload photos, the photo will be marked on a map us
 
 # Map 
 
-| Fields        | Type          |
+| Property        | Type          |
 | ------------- | ------------- |
 | objectId  | String  |
 | updatedAt  | Date |

@@ -104,18 +104,18 @@ This app wil allow a user to upload photos, the photo will be marked on a map us
 
 # User 
 
-| Property        | Type          |
-| ------------- | ------------- |
-| objectId  | String  |
-| authData  | Object  |
-| updatedAt  | Date |
-| createdAt | Date |
-| ACL  | ACL  |
-| emailVerified  | Boolean  |
-| email  | String |
-| Avatar | File |
-| username  | String  |
-| password  | String  |
+| Property        | Type          | Description |
+| ------------- | ------------- | ------------|
+| objectId  | String  | The id of the object |
+| authData  | Object  | Authorization data |
+| updatedAt  | Date | Date of last update |
+| createdAt | Date | Date of creation |
+| ACL  | ACL  | ACL? |
+| emailVerified  | Boolean  | Verification status |
+| email  | String | Email address |
+| Avatar | File | Profile image |
+| username  | String  | Nickname of the user |
+| password  | String  | User key to access account |
 
 
 # Map 

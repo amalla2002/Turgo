@@ -89,17 +89,17 @@ This app wil allow a user to upload photos, the photo will be marked on a map us
 
 # Post:
 
-| Property        | Type          |
-| ------------- | ------------- |
-| objectId  | String  |
-| updatedAt  | Date  |
-| createdAt  | Date |
-| ACL | ACL |
-| location  | GeoPoint  |
-| Picture  | File  |
-| Rates  | Number |
-| Rating | Number |
-| Description  | String  |
+| Property        | Type          | Description |
+| ------------- | ------------- | ------------- |
+| objectId  | String  | The id of the object |
+| updatedAt  | Date  | Date of last update |
+| createdAt  | Date | Date of creation |
+| ACL | ACL | ACL? |
+| location  | GeoPoint  | Point where photo was taken |
+| Picture  | File  | Image to be shown |
+| Rates  | Number | Number of ratings it has received |
+| Rating | Number | Average score from ratings |
+| Description  | String  | User specified description of photo |
 
 
 # User 

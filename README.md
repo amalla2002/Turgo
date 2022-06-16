@@ -89,23 +89,23 @@ This app wil allow a user to upload photos, the photo will be marked on a map us
 
 ### Post object has:
 
-objectId 		| String
+|objectId 		| String|
 
-updatedAt 		| Date
+|updatedAt 		| Date|
 
-createdAt 		| Date
+|createdAt 		| Date|
 
-ACL 			   | ACL
+|ACL 			   | ACL|
 
-Location 		| GeoPoint 
+|Location 		| GeoPoint |
 
-Picture 			| File
+|Picture 			| File|
 
-Rates 			| Number
+|Rates 			| Number|
 
-Rating 			| Number
+|Rating 			| Number|
 
-Description 	| String
+|Description 	| String|
 
 
 ### User object has: 

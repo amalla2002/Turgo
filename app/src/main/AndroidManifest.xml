@@ -4,8 +4,8 @@
     package="com.example.turgo">
 
     <application
-        android:allowBackup="true"
         android:name=".ParseApplication"
+        android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
@@ -19,9 +19,7 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="false" >
-
-        </activity>
+            android:exported="false" />
         <!--
              TODO: Before you run your application, you need a Google Maps API key.
 

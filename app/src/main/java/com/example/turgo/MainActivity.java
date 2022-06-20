@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import com.example.turgo.fragments.FlightFragment;
 import com.example.turgo.fragments.PlacesFragment;
 import com.example.turgo.fragments.ProfileFragment;
+import com.google.android.libraries.places.api.Places;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.parse.ParseUser;
 
@@ -24,8 +25,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
+
+        Places.initialize(getApplicationContext(), String.valueOf(R.string.google_api_key));
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 

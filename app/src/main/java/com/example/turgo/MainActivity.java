@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.example.turgo.fragments.FlightFragment;
@@ -26,8 +27,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        Places.initialize(getApplicationContext(), String.valueOf(R.string.google_api_key));
+        String google_api = getString(R.string.google_api_key);
+        Places.initialize(getApplicationContext(), google_api);
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
 

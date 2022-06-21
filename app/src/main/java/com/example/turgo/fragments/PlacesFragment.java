@@ -17,6 +17,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.turgo.MainActivity;
 import com.example.turgo.R;
 import com.google.android.gms.common.api.Status;
@@ -39,6 +45,7 @@ public class PlacesFragment extends Fragment {
     public static final String TAG = "PlacesFragment";
     private static int AUTOCOMPLETE_REQUEST_CODE = 1;
     private EditText etSearch;
+    private TextView tvJsonResponse;
 
     public PlacesFragment() {    }
     @Override
@@ -57,6 +64,31 @@ public class PlacesFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         etSearch = view.findViewById(R.id.etSearch);
+        tvJsonResponse =view.findViewById(R.id.tvJsonResponse);
+
+        // Direction API
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        String origin = "Disneyland", destination = "Universal+Studios+Hollywood", google_api_key = getString(R.string.google_api_key);
+        String DIRECTION_URL = "https://maps.googleapis.com/maps/api/directions/json?origin="+origin+"&destination="+destination+"&key=" + google_api_key;
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, DIRECTION_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Display the first 500 characters of the response string.
+                        tvJsonResponse.setText("Response is: " + response.substring(0,500));
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                tvJsonResponse.setText("That didn't work!");
+            }
+        });
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
+
+        // AutocompleteSearch
         etSearch.setFocusable(false);
         etSearch.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,9 +104,10 @@ public class PlacesFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 100 && resultCode == -1) {
+
             Place place = Autocomplete.getPlaceFromIntent(data);
             etSearch.setText(place.getName());
-            Log.i(TAG, "Place: " + place.getName() + ", " + place.getId());
+            Log.i(TAG, "Place: " + place.getName() + ", " + place.getId() + ", " + place.getAddress());
         } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
             // TODO: Handle the error.
             Status status = Autocomplete.getStatusFromIntent(data);

@@ -32,7 +32,7 @@ public class LoginActivity extends AppCompatActivity {
         btnMakeAccount = findViewById(R.id.btnMakeAccount);
         etUsername = findViewById(R.id.etUsername);
         etPassword = findViewById(R.id.etPassword);
-
+        if (ParseUser.getCurrentUser()!=null) goMainActivity();
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

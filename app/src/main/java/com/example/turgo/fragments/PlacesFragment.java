@@ -26,7 +26,14 @@ import com.android.volley.toolbox.Volley;
 import com.example.turgo.MainActivity;
 import com.example.turgo.R;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.RectangularBounds;
@@ -36,16 +43,24 @@ import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+import com.google.gson.Gson;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.List;
 
 
-public class PlacesFragment extends Fragment {
+public class PlacesFragment extends Fragment implements OnMapReadyCallback, TaskLoadedCallback {
     public static final String TAG = "PlacesFragment";
     private static int AUTOCOMPLETE_REQUEST_CODE = 1;
     private EditText etSearch;
-    private TextView tvJsonResponse;
+    private Button btnGetDirections;
+    GoogleMap map;
+    MarkerOptions place1, place2;
+    Polyline currentPolyline;
 
     public PlacesFragment() {    }
     @Override
@@ -64,29 +79,54 @@ public class PlacesFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         etSearch = view.findViewById(R.id.etSearch);
-        tvJsonResponse =view.findViewById(R.id.tvJsonResponse);
+        btnGetDirections = view.findViewById(R.id.btnGetDirections);
+        SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.mapFragment);
+        mapFragment.getMapAsync(this::onMapReady);
+        place1 = new MarkerOptions().position(new LatLng(27.658143, 85.3199503)).title("Location 1");
+        place2 = new MarkerOptions().position(new LatLng(27.667491, 85.3208583)).title("Location 2");
+        String url = getUrl(place1.getPosition(), place2.getPosition(), "driving");
 
-        // Direction API
-        // Instantiate the RequestQueue.
-        RequestQueue queue = Volley.newRequestQueue(getActivity());
-        String origin = "Disneyland", destination = "Universal+Studios+Hollywood", google_api_key = getString(R.string.google_api_key);
-        String DIRECTION_URL = "https://maps.googleapis.com/maps/api/directions/json?origin="+origin+"&destination="+destination+"&key=" + google_api_key;
-        // Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, DIRECTION_URL,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // Display the first 500 characters of the response string.
-                        tvJsonResponse.setText("Response is: " + response.substring(0,500));
-                    }
-                }, new Response.ErrorListener() {
+        btnGetDirections.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onErrorResponse(VolleyError error) {
-                tvJsonResponse.setText("That didn't work!");
+            public void onClick(View v) {
+
+
+                // Direction API
+
+                // Instantiate the RequestQueue.
+                RequestQueue queue = Volley.newRequestQueue(getActivity());
+                String origin = "Disneyland", destination = "Universal+Studios+Hollywood", google_api_key = getString(R.string.google_api_key);
+                String DIRECTION_URL = "https://maps.googleapis.com/maps/api/directions/json?origin="+origin+"&destination="+destination+"&key=" + google_api_key;
+        //         Request a string response from the provided URL.
+                StringRequest stringRequest = new StringRequest(Request.Method.GET, DIRECTION_URL,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                // Display the first 500 characters of the response string.
+                                btnGetDirections.setText("Response is: " + response);
+        //                        tvJsonResponse.setText(response.get);
+                                Gson g = new Gson();
+                                JSONArray array = null;
+                                try {
+                                    array = new JSONArray(response);
+                                    Log.i(TAG, array.getJSONObject(0).toString());
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        btnGetDirections.setText("That didn't work!");
+                    }
+                });
+                // Add the request to the RequestQueue.
+                queue.add(stringRequest);
             }
         });
-        // Add the request to the RequestQueue.
-        queue.add(stringRequest);
+
 
         // AutocompleteSearch
         etSearch.setFocusable(false);
@@ -113,5 +153,27 @@ public class PlacesFragment extends Fragment {
             Status status = Autocomplete.getStatusFromIntent(data);
             Log.i(TAG, status.getStatusMessage());
         }
+    }
+
+    @Override
+    public void onMapReady(@NonNull GoogleMap googleMap) {
+        map = googleMap;
+        map.addMarker(place1);
+        map.addMarker(place2);
+    }
+
+    private String getUrl(LatLng origin, LatLng dest, String directionMode) {
+        String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
+        String str_dest = "destination=" + dest.latitude + "," + origin.longitude;
+        String mode = "mode=" + directionMode;
+        String parameters = str_origin + "&" + str_dest + "&" + mode;
+        String output = "json";
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" +getString(R.string.google_api_key);
+        return url;
+    }
+    @Override
+    public void onTaskDone(Object... values) {
+        if (currentPolyline != null) currentPolyline.remove();
+        currentPolyline = map.addPolyline((PolylineOptions) values[0]);
     }
 }

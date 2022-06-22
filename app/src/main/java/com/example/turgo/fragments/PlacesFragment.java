@@ -26,11 +26,14 @@ import com.android.volley.toolbox.Volley;
 import com.example.turgo.MainActivity;
 import com.example.turgo.R;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -58,9 +61,9 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback, Task
     private static int AUTOCOMPLETE_REQUEST_CODE = 1;
     private EditText etSearch;
     private Button btnGetDirections;
-    GoogleMap map;
-    MarkerOptions place1, place2;
-    Polyline currentPolyline;
+    private GoogleMap map;
+    private MarkerOptions place1, place2;
+    private Polyline currentPolyline;
 
     public PlacesFragment() {    }
     @Override
@@ -82,8 +85,11 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback, Task
         btnGetDirections = view.findViewById(R.id.btnGetDirections);
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.mapFragment);
         mapFragment.getMapAsync(this::onMapReady);
-        place1 = new MarkerOptions().position(new LatLng(27.658143, 85.3199503)).title("Location 1");
-        place2 = new MarkerOptions().position(new LatLng(27.667491, 85.3208583)).title("Location 2");
+        LatLng position1, position2;
+        position1 = new LatLng(47.606209, -122.332069);
+        position2 = new LatLng(47.620422, -122.349358);
+        place1 = new MarkerOptions().position(position1).title("Location 1");
+        place2 = new MarkerOptions().position(position2).title("Location 2");
         String url = getUrl(place1.getPosition(), place2.getPosition(), "driving");
 
         btnGetDirections.setOnClickListener(new View.OnClickListener() {
@@ -160,6 +166,13 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback, Task
         map = googleMap;
         map.addMarker(place1);
         map.addMarker(place2);
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        builder.include(place1.getPosition()); builder.include(place2.getPosition());
+        LatLngBounds bounds = builder.build();
+        int padding = 100;
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+//        googleMap.moveCamera(cu);
+        googleMap.animateCamera(cu);
     }
 
     private String getUrl(LatLng origin, LatLng dest, String directionMode) {

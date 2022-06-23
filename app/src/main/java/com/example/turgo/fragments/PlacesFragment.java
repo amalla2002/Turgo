@@ -22,10 +22,13 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.turgo.R;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -38,6 +41,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.maps.android.PolyUtil;
 
 import java.util.Arrays;
 import java.util.List;
@@ -52,6 +56,9 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback, Task
     private MarkerOptions place1, place2;
     private Polyline currentPolyline;
     private List<LatLng> directionList;
+    private LatLng origin, destination;
+    private boolean showMap = false;
+
 
     public PlacesFragment() {    }
     @Override
@@ -73,7 +80,16 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback, Task
         btnGetDirections = view.findViewById(R.id.btnGetDirections);
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.mapFragment);
         mapFragment.getMapAsync(this::onMapReady);
+//        mapFragment.getView().setVisibility(View.GONE);
 
+
+        // make link for directions
+
+        origin = new LatLng(47.606209, -122.332069);
+        destination = new LatLng(47.620422, -122.349358);
+        // mark place
+        place1 = new MarkerOptions().position(origin).title("Origin");
+        place2 = new MarkerOptions().position(destination).title("Origin");
 
 
 
@@ -83,13 +99,7 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback, Task
             @Override
             public void onClick(View v) {
 
-                // make link for directions
-                LatLng position1, position2;
-                position1 = new LatLng(47.606209, -122.332069);
-                position2 = new LatLng(47.620422, -122.349358);
-                // mark place
-                place1 = new MarkerOptions().position(position1).title("Origin");
-                place2 = new MarkerOptions().position(position2).title("Destination");
+
                 String DIRECTION_URL = getUrl(place1.getPosition(), place2.getPosition(), "steps");
                 // Instantiate the RequestQueue.
                 RequestQueue queue = Volley.newRequestQueue(getActivity());
@@ -99,7 +109,7 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback, Task
                             @Override
                             public void onResponse(String response) {
                                 // Display the first 500 characters of the response string.
-                                btnGetDirections.setText("Response is: " + response);
+//                                btnGetDirections.setText("Response is: " + response.substring(0,100));
         //                        tvJsonResponse.setText(response.get);
                                 Gson gson = new Gson();
                                 JsonObject jsonObject = new JsonParser().parse(response).getAsJsonObject();
@@ -109,6 +119,35 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback, Task
                                 Log.i(TAG, narrow.toString());
                                 JsonArray legs = ((JsonObject) narrow).getAsJsonArray("legs");
                                 Log.i(TAG, legs.toString());
+//                                mapFragment.getView().setVisibility(View.VISIBLE);
+//
+//                                showMap = true;
+                                // make direction line
+                                map.addMarker(place1);
+                                map.addMarker(place2);
+                                LatLngBounds.Builder builder = new LatLngBounds.Builder();
+
+                                builder.include(place1.getPosition());
+                                builder.include(place2.getPosition());
+                                LatLngBounds bounds = builder.build();
+                                int padding = 100;
+                                CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+//        googleMap.moveCamera(cu);
+                                map.animateCamera(cu);
+                                JsonObject overview_polyline  = ((JsonObject) narrow).getAsJsonObject("overview_polyline");
+                                String line = overview_polyline.getAsJsonPrimitive("points").getAsString();
+                                Log.i(TAG, line.toString());
+                                directionList = PolyUtil.decode(line);
+                                Log.i(TAG, line.toString());
+                                Polyline polyline1 = map.addPolyline( new PolylineOptions().addAll(directionList));
+//                                map.addPolyline(PolyUtil.decode(((JsonObject) narrow).getAsJsonArray("legs");))
+//                                Polyline polyline1 = map.addPolyline(new PolylineOptions()
+//                                        .clickable(true)
+//                                        .add(place1.getPosition()).add(place2.getPosition()));
+//                        .addAll(directionList));
+//        map.addPolyline(PolylineOptions )
+
+
                             }
                         }, new Response.ErrorListener() {
                     @Override
@@ -139,10 +178,10 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback, Task
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 100 && resultCode == -1) {
-
             Place place = Autocomplete.getPlaceFromIntent(data);
+            destination = place.getLatLng();
+            place2 = new MarkerOptions().position(destination).title("Destination");
             etSearch.setText(place.getName());
-            Log.i(TAG, "Place: " + place.getName() + ", " + place.getId() + ", " + place.getAddress());
         } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
             // TODO: Handle the error.
             Status status = Autocomplete.getStatusFromIntent(data);
@@ -153,21 +192,6 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback, Task
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         map = googleMap;
-//        map.addMarker(place1);
-//        map.addMarker(place2);
-//        LatLngBounds.Builder builder = new LatLngBounds.Builder();
-//        builder.include(place1.getPosition()); builder.include(place2.getPosition());
-//        LatLngBounds bounds = builder.build();
-//        int padding = 100;
-//        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
-////        googleMap.moveCamera(cu);
-//        googleMap.animateCamera(cu);
-//
-//        Polyline polyline1 = googleMap.addPolyline(new PolylineOptions()
-//                        .clickable(true)
-//                        .addAll(directionList));
-////        map.addPolyline(PolylineOptions )
-
     }
 
     private String getUrl(LatLng origin, LatLng dest, String directionMode) {

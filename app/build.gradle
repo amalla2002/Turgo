@@ -41,6 +41,7 @@ dependencies {
     implementation "com.github.parse-community.Parse-SDK-Android:parse:1.18.5"
 
     implementation 'com.google.code.gson:gson:2.9.0'
+    implementation 'com.google.maps.android:android-maps-utils:0.4+'
 
 
 

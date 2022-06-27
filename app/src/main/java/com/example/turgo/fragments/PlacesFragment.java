@@ -48,8 +48,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.maps.android.PolyUtil;
+
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class PlacesFragment extends Fragment implements OnMapReadyCallback {
     public static final String TAG = "PlacesFragment";
@@ -64,6 +68,9 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
     private boolean showMap = false;
     private LocationManager locationManager;
     private FusedLocationProviderClient fusedLocationProviderClient;
+
+
+    // seattle api endpoint https://data.seattle.gov/resource/j9km-ydkc.json
 
     public PlacesFragment() {
     }
@@ -88,7 +95,12 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.mapFragment);
         mapFragment.getMapAsync(this::onMapReady);
 //        mapFragment.getView().setVisibility(View.GONE);
-        setMyLocation();
+
+
+
+
+
+//        setMyLocation();
         btnGetDirections.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,13 +119,14 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
                                 JsonObject overview_polyline  = ((JsonObject) narrow).getAsJsonObject("overview_polyline");
                                 String line = overview_polyline.getAsJsonPrimitive("points").getAsString();
                                 directionList = PolyUtil.decode(line);
+
                                 putLine();
                             }
                         }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        btnGetDirections.setText("That didn't work!");
-                    }
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                btnGetDirections.setText("That didn't work!");
+                            }
                 });
                 queue.add(stringRequest);
             }
@@ -152,6 +165,7 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
     }
 
     public void putLine() {
+        map.clear();
         map.addMarker(place1);
         map.addMarker(place2);
         LatLngBounds.Builder builder = new LatLngBounds.Builder();

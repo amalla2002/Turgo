@@ -13,8 +13,8 @@
         android:title="Place"
         app:showAsAction="always" />
     <item
-        android:id="@+id/action_flights"
+        android:id="@+id/action_parks"
         android:icon="@android:drawable/ic_menu_mapmode"
-        android:title="Fly"
+        android:title="Parks"
         app:showAsAction="always" />
 </menu>

@@ -13,11 +13,11 @@ import android.view.ViewGroup;
 import com.example.turgo.R;
 
 
-public class FlightFragment extends Fragment {
+public class ParksFragment extends Fragment {
 
 
 
-    public FlightFragment() {
+    public ParksFragment() {
         // Required empty public constructor
     }
 
@@ -36,5 +36,8 @@ public class FlightFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+
+
     }
 }

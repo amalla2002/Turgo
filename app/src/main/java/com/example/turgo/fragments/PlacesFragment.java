@@ -105,6 +105,10 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onClick(View v) {
                 setMyLocation();
+                if (place1==null) {
+                    origin = new LatLng(47.628800, -122.342840);
+                    place1 = new MarkerOptions().position(origin).title("Default ;c");
+                }
                 String DIRECTION_URL = getUrl(place1.getPosition(), place2.getPosition(), "steps");
                 RequestQueue queue = Volley.newRequestQueue(getActivity());
                 StringRequest stringRequest = new StringRequest(Request.Method.GET, DIRECTION_URL,
@@ -119,7 +123,7 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
                                 JsonObject overview_polyline  = ((JsonObject) narrow).getAsJsonObject("overview_polyline");
                                 String line = overview_polyline.getAsJsonPrimitive("points").getAsString();
                                 directionList = PolyUtil.decode(line);
-
+                                Log.i(TAG, line);
                                 putLine();
                             }
                         }, new Response.ErrorListener() {

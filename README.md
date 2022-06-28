@@ -58,8 +58,7 @@ You can look up a place, go (with directions) and here a description of the plac
 * MenuHub
    * Profile 
    * Places 
-   * Parks 
-   * Flights 
+   * Parks
   
 
 ## Wireframes
@@ -116,6 +115,9 @@ Park
 
 
 ### Networking
+- Google Maps Directions API
+- Google Maps Places SDK Place Autocomplete
+- Seattle Department of Parks and Recreation API
 - [Add list of network requests by screen ]
 - [Create basic snippets for each Parse network request]
 - [OPTIONAL: List endpoints if using existing API such as Yelp]

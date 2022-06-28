@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         String google_api = getString(R.string.google_api_key);
         Places.initialize(getApplicationContext(), google_api);
-
         // HAVE I BUILT TODAYS TREE?
         ParseQuery<City> query = ParseQuery.getQuery(City.class);
         query.findInBackground(new FindCallback<City>() {

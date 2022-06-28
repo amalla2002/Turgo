@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.MenuItem;
 
@@ -27,10 +28,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.parse.FindCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
-import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -56,10 +55,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void done(List<City> city, ParseException e) {
                 City SEA = city.get(0); // IF THERE WERE MORE CITYS, LOOK FOR THE ONE THE USER IS IN
-                Log.i(TAG, SEA.toString());
                 int nowDate = Calendar.getInstance().getTime().getDate();
                 int lastCalc = SEA.getUpdatedAt().getDate();
-                setSEAObjectId(SEA);
                 if (nowDate != lastCalc) {
                     for (int i = 0; i<SEA.getParks().size(); i += 20) eraseData(); // Needs polishing
                     String PARKS_URL = "https://data.seattle.gov/resource/j9km-ydkc.json";
@@ -86,7 +83,33 @@ public class MainActivity extends AppCompatActivity {
                                         } catch (Exception e) {}
                                         park.saveInBackground();
                                     }
-                                    setSEAObjectId(SEA);
+                                    Handler handler = new Handler();
+                                    handler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            List<String> parksOfCity = new ArrayList<String>();
+                                            // improve for requeing until all parks id are in ID.
+                                            ParseQuery<Park> query = ParseQuery.getQuery(Park.class);
+                                            query.setLimit(200);
+                                            query.findInBackground(new FindCallback<Park>() {
+                                                @Override
+                                                public void done(List<Park> parks, ParseException e) {
+
+                                                    for (Park park : parks) parksOfCity.add(park.getObjectId());
+                                                    Log.i(TAG, parksOfCity.toString());
+                                                    Log.i(TAG, String.valueOf(parksOfCity.size()));
+
+                                                }
+                                            });
+                                            Handler handler = new Handler();
+                                            handler.postDelayed(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    SEA.setParks(parksOfCity);
+                                                    SEA.saveInBackground();
+                                                }
+                                            }, 5000);
+                                        }}, 5000);
                                 }
                             }, new Response.ErrorListener() {
                         @Override
@@ -133,23 +156,5 @@ public class MainActivity extends AppCompatActivity {
                 for (Park park : parks) park.deleteInBackground();
             }
         });
-    }
-
-    public void setSEAObjectId(City SEA) {
-        List<String> parksOfCity = new ArrayList<String>();
-        // improve for requeing until all parks id are in ID.
-        ParseQuery<Park> query = ParseQuery.getQuery(Park.class);
-        query.setLimit(20);
-        query.findInBackground(new FindCallback<Park>() {
-            @Override
-            public void done(List<Park> parks, ParseException e) {
-
-                for (Park park : parks) parksOfCity.add(park.getObjectId());
-                Log.i(TAG, parksOfCity.toString());
-
-            }
-        });
-        SEA.setParks(parksOfCity);
-        SEA.saveInBackground();
     }
 }

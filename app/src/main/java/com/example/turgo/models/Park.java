@@ -22,8 +22,8 @@ public class Park extends ParseObject {
     public String getHours() {
         return getString(KEY_HOURS);
     }
-    public List<Number> getNpeople() {
-        return getList(KEY_NPEOPLE);
+    public Number getNpeople() {
+        return getNumber(KEY_NPEOPLE);
     }
     public Number getLatitude() {
         return getNumber(KEY_LATITUDE);

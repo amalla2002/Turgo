@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
                                         try {
                                             JsonObject loc = thisPark.get("location").getAsJsonObject();
                                             park.setLatitude(loc.get("latitude").getAsDouble());
-                                            park.setLongitude(loc.get("Longitude").getAsDouble());
+                                            park.setLongitude(loc.get("longitude").getAsDouble());
                                         } catch (Exception e) {}
                                         try {
                                             park.setHours(thisPark.get("hours").getAsString());

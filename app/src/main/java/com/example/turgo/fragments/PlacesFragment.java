@@ -49,11 +49,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.maps.android.PolyUtil;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public class PlacesFragment extends Fragment implements OnMapReadyCallback {
     public static final String TAG = "PlacesFragment";

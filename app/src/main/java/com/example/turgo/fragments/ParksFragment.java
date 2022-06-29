@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.example.turgo.MainActivity;
 import com.example.turgo.R;
 import com.example.turgo.adapter.ParkAdapter;
 import com.example.turgo.models.City;
@@ -24,7 +25,10 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class ParksFragment extends Fragment {
@@ -33,12 +37,12 @@ public class ParksFragment extends Fragment {
     private SeekBar sbPeopleAmount;
     private final int MAXPEOPLE = 1000;
     private static final String TAG = "ParksFragment";
-    private City myCity;
     private int[] segTree;
     private RecyclerView rvParks;
     private ParkAdapter adapter;
     private List<Park> allPark;
     private int currentTarget;
+    private List<String> allParkIds;
 
     public ParksFragment() {
         // Required empty public constructor
@@ -60,6 +64,8 @@ public class ParksFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         System.loadLibrary("native-lib");
+        segTree = MainActivity.myCity.getTree();
+        allParkIds = MainActivity.myCity.getParks();
         tvPeopleAmount = view.findViewById(R.id.tvPeopleAmount);
         sbPeopleAmount = view.findViewById(R.id.sbPeopleAmount);
         rvParks = view.findViewById(R.id.rvParks);
@@ -98,29 +104,24 @@ public class ParksFragment extends Fragment {
                 allPark.clear();
                 adapter.notifyDataSetChanged();
                 // get new post meeting required num of people < currentTarget
-                Park test2 = new Park();
-                test2.setParkName("ACTUAL BESTEST SEA PARK"); test2.setHours("All day"); test2.setNpeople(72);
-                allPark.add(test2);
-                adapter.notifyDataSetChanged();
+                int[] selected = queueTree(segTree, currentTarget);
+                List<Integer> picked = Arrays.stream(selected).boxed().collect(Collectors.toList());
+                List<String> parkId = new ArrayList<>();
+                for (Integer i : picked) parkId.add(allParkIds.get(i));
+                ParseQuery<Park> query = ParseQuery.getQuery(Park.class);
+                query.whereContainsAll("objectId", parkId);
+                query.findInBackground(new FindCallback<Park>() {
+                    @Override
+                    public void done(List<Park> objects, ParseException e) {
+                        allPark.addAll(objects);
+                        adapter.notifyDataSetChanged();
+                    }
+                });
             }
         });
 
-//        ParseQuery<City> query = ParseQuery.getQuery(City.class);
-//        query.findInBackground(new FindCallback<City>() {
-//            @Override
-//            public void done(List<City> city, ParseException e) {
-//                myCity = city.get(0); // IF THERE WERE MORE CITYS, LOOK FOR THE ONE THE USER IS IN
-//                segTree = myCity.getTree();
-//                if (segTree.length==0) {
-//                    int[] data = myCity.getData();
-//                    segTree = buildTree(data);
-//                    myCity.setTree(segTree);
-//                    myCity.saveInBackground();
-//                }
-//            }
-//        });
+
+
     }
-//    private native int[] queueTree(int[] segmentedTree);
-//    private native int[] buildTree(int[] data);
-//    private native String getText();
+    private native int[] queueTree(int[] segmentedTree, int target);
 }

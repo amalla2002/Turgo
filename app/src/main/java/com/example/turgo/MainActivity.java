@@ -33,6 +33,7 @@ import com.parse.ParseQuery;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     final FragmentManager fragmentManager = getSupportFragmentManager();
     private BottomNavigationView bottomNavigationView;
     private boolean getInfo = false;
+    public static City myCity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,12 +55,12 @@ public class MainActivity extends AppCompatActivity {
         query.findInBackground(new FindCallback<City>() {
             @Override
             public void done(List<City> city, ParseException e) {
-                City SEA = city.get(0); // IF THERE WERE MORE CITYS, LOOK FOR THE ONE THE USER IS IN
+                myCity = city.get(0); // IF THERE WERE MORE CITYS, LOOK FOR THE ONE THE USER IS IN
                 int nowDate = Calendar.getInstance().getTime().getDate();
-                int lastCalc = SEA.getUpdatedAt().getDate();
+                int lastCalc = myCity.getUpdatedAt().getDate();
                 if (nowDate != lastCalc) {
-                    for (int i = 0; i<SEA.getParks().size(); i += 20) eraseData(); // Needs polishing
-                    String PARKS_URL = "https://data.seattle.gov/resource/j9km-ydkc.json";
+//                    for (int i = 0; i<myCity.getParks().size(); i += 20) eraseData(); // Needs polishing // TODO: MAKE SURE THIS WORKS, BUT ANOTHER DAY (NOT THAT IMPORTANT =) )
+                    String PARKS_URL = "https://data.myCityttle.gov/resource/j9km-ydkc.json";
                     RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
                     StringRequest stringRequest = new StringRequest(Request.Method.GET, PARKS_URL,
                             new Response.Listener<String>() {
@@ -82,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
                                         } catch (Exception e) {}
                                         park.saveInBackground();
                                     }
+                                    // Handler delay ensures it works? its possible that im capping out without it
                                     Handler handler = new Handler();
                                     handler.postDelayed(new Runnable() {
                                         @Override
@@ -104,8 +107,10 @@ public class MainActivity extends AppCompatActivity {
                                             handler.postDelayed(new Runnable() {
                                                 @Override
                                                 public void run() {
-                                                    SEA.setParks(parksOfCity);
-                                                    SEA.saveInBackground();
+                                                    myCity.setParks(parksOfCity);
+                                                    myCity.setPeople(Collections.nCopies(parksOfCity.size(), 0));
+                                                    myCity.setTree(buildTree(myCity.getPeople()));
+                                                    myCity.saveInBackground();
                                                 }
                                             }, 5000);
                                         }}, 5000);
@@ -113,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
                             }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            Log.i(TAG, "SEA?");
+                            Log.i(TAG, "myCity?");
                         }
                     });
                     queue.add(stringRequest);
@@ -156,4 +161,5 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+    private native int[] buildTree(int[] people);
 }

@@ -12,7 +12,7 @@ public class City extends ParseObject {
 
     public static final String KEY_LOCATION = "location";
     public static final String KEY_PARKS = "parks";
-    public static final String KEY_DATA = "data";
+    public static final String KEY_PEOPLE = "people";
     public static final String KEY_TREE = "tree";
 
     public City() {}
@@ -23,8 +23,8 @@ public class City extends ParseObject {
     public List<String> getParks() {
         return getList(KEY_PARKS);
     }
-    public int[] getData() {
-        List<Integer> that = getList(KEY_DATA);
+    public int[] getPeople() {
+        List<Integer> that = getList(KEY_PEOPLE);
         return that.stream().mapToInt(Integer::intValue).toArray();
     }
     public int[] getTree() {
@@ -38,8 +38,8 @@ public class City extends ParseObject {
     public void setParks(List<String> parks) {
         put(KEY_PARKS, parks);
     }
-    public void setData(List<Integer> data) {
-        put(KEY_DATA, data);
+    public void setPeople(List<Integer> people) {
+        put(KEY_PEOPLE, people);
     }
     public void setTree(int[] tree) {
         put(KEY_TREE, Arrays.asList(tree));

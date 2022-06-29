@@ -1,6 +1,7 @@
 package com.example.turgo.adapter;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,9 +9,14 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.turgo.MainActivity;
 import com.example.turgo.R;
+import com.example.turgo.fragments.VisitParkFragment;
 import com.example.turgo.models.Park;
 
 import java.util.List;
@@ -62,7 +68,13 @@ public class ParkAdapter extends RecyclerView.Adapter<ParkAdapter.ViewHolder> {
             btnGoToPark.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // TODO: launch direction api with map and overview polyline
+                    // TODO: launch activity with direction api with map and overview polyline & asking how many are going for the update, button for GO, that changes to LEAVE after
+                    FragmentManager fragmentManager = ((AppCompatActivity)context).getSupportFragmentManager();
+                    Fragment fragment = new VisitParkFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable("clickedPark", park);
+                    fragmentManager.beginTransaction().replace(R.id.flContainer, new VisitParkFragment()).commit();
+                    //
                 }
             });
         }

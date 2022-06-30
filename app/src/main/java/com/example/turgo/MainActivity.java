@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
                 myCity = city.get(0); // IF THERE WERE MORE CITYS, LOOK FOR THE ONE THE USER IS IN
                 int nowDate = Calendar.getInstance().getTime().getDate();
                 int lastCalc = myCity.getUpdatedAt().getDate();
-                if (nowDate == nowDate) {
+                if (nowDate != nowDate) {
 //                    for (int i = 0; i<myCity.getParks().size(); i += 20) eraseData(); // Needs polishing // TODO: MAKE SURE THIS WORKS, BUT ANOTHER DAY (NOT THAT IMPORTANT =) )
                     String PARKS_URL = "https://data.seattle.gov/resource/j9km-ydkc.json";
                     RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
@@ -129,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
                     });
                     queue.add(stringRequest);
                 }
+                Log.i(TAG, "Can switch");
             }
         });
 

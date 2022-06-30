@@ -25,6 +25,7 @@ public class ParkAdapter extends RecyclerView.Adapter<ParkAdapter.ViewHolder> {
     public final String TAG = "ParkAdapter";
     private Context context;
     private List<Park> parks;
+    public static Park clickedPark;
 
     public ParkAdapter(Context context, List<Park> parks) {
         this.context = context;
@@ -71,8 +72,7 @@ public class ParkAdapter extends RecyclerView.Adapter<ParkAdapter.ViewHolder> {
                     // TODO: launch activity with direction api with map and overview polyline & asking how many are going for the update, button for GO, that changes to LEAVE after
                     FragmentManager fragmentManager = ((AppCompatActivity)context).getSupportFragmentManager();
                     Fragment fragment = new VisitParkFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelable("clickedPark", park);
+                    clickedPark = park;
                     fragmentManager.beginTransaction().replace(R.id.flContainer, new VisitParkFragment()).commit();
                     //
                 }

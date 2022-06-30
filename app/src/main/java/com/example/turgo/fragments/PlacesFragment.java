@@ -92,11 +92,6 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.mapFragment);
         mapFragment.getMapAsync(this::onMapReady);
 //        mapFragment.getView().setVisibility(View.GONE);
-
-
-
-
-
 //        setMyLocation();
         btnGetDirections.setOnClickListener(new View.OnClickListener() {
             @Override

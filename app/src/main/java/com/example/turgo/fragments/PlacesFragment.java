@@ -181,7 +181,7 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
 
     private String getUrl(LatLng origin, LatLng dest, String directionMode) {
         String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
-        String str_dest = "destination=" + dest.latitude + "," + origin.longitude;
+        String str_dest = "destination=" + dest.latitude + "," + dest.longitude; // TODO: CHECK if works
         String mode = "mode=" + directionMode;
         String parameters = str_origin + "&" + str_dest + "&" + mode;
         String output = "json";

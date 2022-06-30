@@ -32,6 +32,7 @@ import com.parse.ParseException;
 import com.parse.ParseQuery;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        System.loadLibrary("native-lib");
         String google_api = getString(R.string.google_api_key);
         Places.initialize(getApplicationContext(), google_api);
         // HAVE I BUILT TODAYS TREE?
@@ -58,9 +60,9 @@ public class MainActivity extends AppCompatActivity {
                 myCity = city.get(0); // IF THERE WERE MORE CITYS, LOOK FOR THE ONE THE USER IS IN
                 int nowDate = Calendar.getInstance().getTime().getDate();
                 int lastCalc = myCity.getUpdatedAt().getDate();
-                if (nowDate != lastCalc) {
+                if (nowDate == nowDate) {
 //                    for (int i = 0; i<myCity.getParks().size(); i += 20) eraseData(); // Needs polishing // TODO: MAKE SURE THIS WORKS, BUT ANOTHER DAY (NOT THAT IMPORTANT =) )
-                    String PARKS_URL = "https://data.myCityttle.gov/resource/j9km-ydkc.json";
+                    String PARKS_URL = "https://data.seattle.gov/resource/j9km-ydkc.json";
                     RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
                     StringRequest stringRequest = new StringRequest(Request.Method.GET, PARKS_URL,
                             new Response.Listener<String>() {
@@ -85,8 +87,8 @@ public class MainActivity extends AppCompatActivity {
                                         park.saveInBackground();
                                     }
                                     // Handler delay ensures it works? its possible that im capping out without it
-                                    Handler handler = new Handler();
-                                    handler.postDelayed(new Runnable() {
+                                    Handler handler1 = new Handler();
+                                    handler1.postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
                                             List<String> parksOfCity = new ArrayList<String>();
@@ -103,14 +105,18 @@ public class MainActivity extends AppCompatActivity {
 
                                                 }
                                             });
-                                            Handler handler = new Handler();
-                                            handler.postDelayed(new Runnable() {
+                                            Handler handler2 = new Handler();
+                                            handler2.postDelayed(new Runnable() {
                                                 @Override
                                                 public void run() {
+                                                    Log.i(TAG, "Setting city info");
                                                     myCity.setParks(parksOfCity);
                                                     myCity.setPeople(Collections.nCopies(parksOfCity.size(), 0));
-                                                    myCity.setTree(buildTree(myCity.getPeople()));
+                                                    List<Integer> that = Collections.nCopies(parksOfCity.size(), 0);
+                                                    Log.i(TAG, that.toString());
+                                                    myCity.setTree((buildTree(that.stream().mapToInt(Integer::intValue).toArray())));
                                                     myCity.saveInBackground();
+                                                    Log.i(TAG, "city info set");
                                                 }
                                             }, 5000);
                                         }}, 5000);

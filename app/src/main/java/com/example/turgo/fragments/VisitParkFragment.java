@@ -48,6 +48,8 @@ public class VisitParkFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        System.loadLibrary("native-lib");
         btnParkVisitState = view.findViewById(R.id.btnParkVisitState);
         etNumOfPeople = view.findViewById(R.id.etNumOfPeople);
 
@@ -58,24 +60,22 @@ public class VisitParkFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 int pos = MainActivity.myCity.getParks().indexOf(park.getObjectId());
+                int val = Integer.parseInt(etNumOfPeople.getText().toString());
                 if (btnParkVisitState.getText()=="GO") {
                     if (etNumOfPeople.getText().toString() == null) {
                         Toast.makeText(getContext(), "Please Indicate Number of People", Toast.LENGTH_SHORT).show();
                         return;
                     }
                     btnParkVisitState.setText("Leave");
-                    MainActivity.myCity.setTree(updateTree(MainActivity.myCity.getTree(), pos, Integer.parseInt(etNumOfPeople.getText().toString())));
-
                 }
                 else {
-                    MainActivity.myCity.setTree(updateTree(MainActivity.myCity.getTree(), pos, -Integer.parseInt(etNumOfPeople.getText().toString())));
+                    val *= -1;
                     FragmentManager fragmentManager = getParentFragmentManager();
                     fragmentManager.beginTransaction().replace(R.id.flContainer, new ParksFragment()).commit();
                 }
-
+                MainActivity.myCity.setTree(updateTree(MainActivity.myCity.getTree(), pos, val));
             }
         });
-
     }
 
     private native int[] updateTree(int tree[], int pos, int val);

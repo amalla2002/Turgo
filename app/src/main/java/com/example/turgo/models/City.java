@@ -6,6 +6,7 @@ import com.parse.ParseObject;
 
 import java.util.List;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 @ParseClassName("City")
 public class City extends ParseObject {
@@ -42,6 +43,6 @@ public class City extends ParseObject {
         put(KEY_PEOPLE, people);
     }
     public void setTree(int[] tree) {
-        put(KEY_TREE, Arrays.asList(tree));
+        put(KEY_TREE, Arrays.stream(tree).boxed().collect(Collectors.toList()));
     }
 }

@@ -58,7 +58,7 @@ public class ParkAdapter extends RecyclerView.Adapter<ParkAdapter.ViewHolder> {
             tvParkName = itemView.findViewById(R.id.tvParkName);
             tvPeopleOnPark = itemView.findViewById(R.id.tvPeopleOnPark);
             tvHours = itemView.findViewById(R.id.tvHours);
-            btnGoToPark = (Button) itemView.findViewById(R.id.btnGoToPark);
+            btnGoToPark = itemView.findViewById(R.id.btnGoToPark);
         }
         public void bind(Park park) {
             tvParkName.setText(park.getParkName());

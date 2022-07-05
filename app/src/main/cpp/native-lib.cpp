@@ -52,7 +52,8 @@ Java_com_example_turgo_fragments_VisitParkFragment_updateTree(JNIEnv *env, jobje
                                                               jintArray tree, jint pos, jint val) {
     jsize size = env->GetArrayLength( tree );
     vector<int> T(size);
-    pos += (T.size()-24)/2-1;
+    env->GetIntArrayRegion(tree, jsize{0}, size, &T[0]);
+    pos += (T.size()-24)/2;
     T[pos] += val; // not using T[pos] = val in case there are multiple updates at the same time
     pos /= 2;
     for (; pos>0; pos/=2) T[pos] = min(T[2*pos], T[2*pos+1]);

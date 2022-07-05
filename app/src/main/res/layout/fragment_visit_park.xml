@@ -7,27 +7,14 @@
     tools:context=".fragments.VisitParkFragment">
 
 
-    <fragment
-        android:id="@+id/mapFragmentPark"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="160dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <EditText
         android:id="@+id/etNumOfPeople"
         android:layout_width="72dp"
         android:layout_height="52dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="136dp"
         android:ems="10"
         android:inputType="number"
+        app:layout_constraintEnd_toEndOf="@+id/tvAmountforUpdate"
         app:layout_constraintStart_toStartOf="@+id/tvAmountforUpdate"
         app:layout_constraintTop_toBottomOf="@+id/tvAmountforUpdate" />
 
@@ -35,9 +22,9 @@
         android:id="@+id/tvAmountforUpdate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:text="How many are going?"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -45,10 +32,10 @@
         android:id="@+id/btnParkVisitState"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="232dp"
         android:text="GO"
-        app:layout_constraintStart_toEndOf="@+id/etNumOfPeople"
+        app:layout_constraintEnd_toEndOf="@+id/etNumOfPeople"
+        app:layout_constraintStart_toStartOf="@+id/etNumOfPeople"
         app:layout_constraintTop_toBottomOf="@+id/tvAmountforUpdate" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

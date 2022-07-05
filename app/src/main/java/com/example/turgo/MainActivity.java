@@ -4,12 +4,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.MenuItem;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -30,9 +28,7 @@ import com.google.gson.JsonParser;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
@@ -52,7 +48,19 @@ public class MainActivity extends AppCompatActivity {
         System.loadLibrary("native-lib");
         String google_api = getString(R.string.google_api_key);
         Places.initialize(getApplicationContext(), google_api);
-        // HAVE I BUILT TODAYS TREE?
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.action_profile);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switchFragments(item.getItemId());
+                return true;
+            }
+        });
+        prepareInfoForToday();
+    }
+
+    private void prepareInfoForToday() {
         ParseQuery<City> query = ParseQuery.getQuery(City.class);
         query.findInBackground(new FindCallback<City>() {
             @Override
@@ -60,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
                 myCity = city.get(0); // IF THERE WERE MORE CITYS, LOOK FOR THE ONE THE USER IS IN
                 int nowDate = Calendar.getInstance().getTime().getDate();
                 int lastCalc = myCity.getUpdatedAt().getDate();
-                if (nowDate != nowDate) {
+                if (nowDate == nowDate) {
 //                    for (int i = 0; i<myCity.getParks().size(); i += 20) eraseData(); // Needs polishing // TODO: MAKE SURE THIS WORKS, BUT ANOTHER DAY (NOT THAT IMPORTANT =) )
                     String PARKS_URL = "https://data.seattle.gov/resource/j9km-ydkc.json";
                     RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
@@ -68,57 +76,13 @@ public class MainActivity extends AppCompatActivity {
                             new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String response) {
-                                    Gson gson = new Gson();
-                                    JsonArray jsonParks = new JsonParser().parse(response).getAsJsonArray();
-
-                                    for (int i = 0; i < jsonParks.size(); ++i) {
-                                        JsonObject thisPark = jsonParks.get(i).getAsJsonObject();
-                                        Park park = new Park();
-                                        park.setParkName(thisPark.get("name").toString());
-                                        park.setNpeople(0);
-                                        try {
-                                            JsonObject loc = thisPark.get("location").getAsJsonObject();
-                                            park.setLatitude(loc.get("latitude").getAsDouble());
-                                            park.setLongitude(loc.get("longitude").getAsDouble());
-                                        } catch (Exception e) {}
-                                        try {
-                                            park.setHours(thisPark.get("hours").getAsString());
-                                        } catch (Exception e) {}
-                                        park.saveInBackground();
-                                    }
+                                    saveParks(response);
                                     // Handler delay ensures it works? its possible that im capping out without it
                                     Handler handler1 = new Handler();
                                     handler1.postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
-                                            List<String> parksOfCity = new ArrayList<String>();
-                                            // improve for requeing until all parks id are in ID.
-                                            ParseQuery<Park> query = ParseQuery.getQuery(Park.class);
-                                            query.setLimit(200);
-                                            query.findInBackground(new FindCallback<Park>() {
-                                                @Override
-                                                public void done(List<Park> parks, ParseException e) {
-
-                                                    for (Park park : parks) parksOfCity.add(park.getObjectId());
-                                                    Log.i(TAG, parksOfCity.toString());
-                                                    Log.i(TAG, String.valueOf(parksOfCity.size()));
-
-                                                }
-                                            });
-                                            Handler handler2 = new Handler();
-                                            handler2.postDelayed(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    Log.i(TAG, "Setting city info");
-                                                    myCity.setParks(parksOfCity);
-                                                    myCity.setPeople(Collections.nCopies(parksOfCity.size(), 0));
-                                                    List<Integer> that = Collections.nCopies(parksOfCity.size(), 0);
-                                                    Log.i(TAG, that.toString());
-                                                    myCity.setTree((buildTree(that.stream().mapToInt(Integer::intValue).toArray())));
-                                                    myCity.saveInBackground();
-                                                    Log.i(TAG, "city info set");
-                                                }
-                                            }, 5000);
+                                            readyMyCity();
                                         }}, 5000);
                                 }
                             }, new Response.ErrorListener() {
@@ -132,29 +96,57 @@ public class MainActivity extends AppCompatActivity {
                 Log.i(TAG, "Can switch");
             }
         });
+    }
 
-        bottomNavigationView = findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Fragment fragment;
-                switch (item.getItemId()) {
-                    case R.id.action_parks:
-                        fragment = new ParksFragment();
-                        break;
-                    case R.id.action_places:
-                        fragment = new PlacesFragment();
-                        break;
-                    case R.id.action_profile:
-                    default:
-                        fragment = new ProfileFragment();
-                        break;
-                }
-                fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
-                return true;
-            }
-        });
-        bottomNavigationView.setSelectedItemId(R.id.action_profile);
+    private void switchFragments(int itemId) {
+        Fragment fragment;
+        switch (itemId) {
+            case R.id.action_parks:
+                fragment = new ParksFragment();
+                break;
+            case R.id.action_places:
+                fragment = new PlacesFragment();
+                break;
+            case R.id.action_profile:
+            default:
+                fragment = new ProfileFragment();
+                break;
+        }
+        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
+    }
+
+    private void readyMyCity() {
+        List<String> parksOfCity = new ArrayList<>();
+        ParseQuery<Park> query = ParseQuery.getQuery(Park.class);
+        query.setLimit(200);
+        List<Park> parks = null;
+        try {parks = query.find();  } catch (ParseException e) {}
+        for (Park park : parks) parksOfCity.add(park.getObjectId());
+        myCity.setParks(parksOfCity);
+        myCity.setPeople(Collections.nCopies(parksOfCity.size(), 0));
+        List<Integer> that = Collections.nCopies(parksOfCity.size(), 0);
+        myCity.setTree((buildTree(that.stream().mapToInt(Integer::intValue).toArray())));
+        try { myCity.save();  } catch (ParseException e) {}
+    }
+
+    private void saveParks(String response) {
+        Gson gson = new Gson();
+        JsonArray jsonParks = new JsonParser().parse(response).getAsJsonArray();
+        for (int i = 0; i < jsonParks.size(); ++i) {
+            JsonObject thisPark = jsonParks.get(i).getAsJsonObject();
+            Park park = new Park();
+            park.setParkName(thisPark.get("name").toString());
+            park.setNpeople(0);
+            try {
+                JsonObject loc = thisPark.get("location").getAsJsonObject();
+                park.setLatitude(loc.get("latitude").getAsDouble());
+                park.setLongitude(loc.get("longitude").getAsDouble());
+            } catch (Exception e) {}
+            try {
+                park.setHours(thisPark.get("hours").getAsString());
+            } catch (Exception e) {}
+            park.saveInBackground();
+        }
     }
 
     public void eraseData() {

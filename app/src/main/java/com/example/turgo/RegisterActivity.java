@@ -1,25 +1,21 @@
 package com.example.turgo;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
 public class RegisterActivity extends AppCompatActivity {
-
     private static final String TAG = "RegisterActivity";
     private EditText etUsername;
     private EditText etPassword;
     private Button btnRegister;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +24,6 @@ public class RegisterActivity extends AppCompatActivity {
         etUsername = findViewById(R.id.etUsernameRegister);
         etPassword = findViewById(R.id.etPasswordRegister);
         btnRegister = findViewById(R.id.btnRegister);
-
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

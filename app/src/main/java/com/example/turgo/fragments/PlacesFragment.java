@@ -48,7 +48,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.maps.android.PolyUtil;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -65,12 +64,9 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
     private boolean showMap = false;
     private LocationManager locationManager;
     private FusedLocationProviderClient fusedLocationProviderClient;
-
-
     // seattle api endpoint https://data.seattle.gov/resource/j9km-ydkc.json
 
-    public PlacesFragment() {
-    }
+    public PlacesFragment() { }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -78,9 +74,7 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_places, container, false);
     }
 
@@ -91,53 +85,49 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
         btnGetDirections = view.findViewById(R.id.btnGetDirections);
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.mapFragment);
         mapFragment.getMapAsync(this::onMapReady);
-//        mapFragment.getView().setVisibility(View.GONE);
-//        setMyLocation();
         btnGetDirections.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 setMyLocation();
-                if (place1==null) {
-                    origin = new LatLng(47.628800, -122.342840);
-                    place1 = new MarkerOptions().position(origin).title("Default ;c");
-                }
                 String DIRECTION_URL = getUrl(place1.getPosition(), place2.getPosition(), "steps");
-                RequestQueue queue = Volley.newRequestQueue(getActivity());
-                StringRequest stringRequest = new StringRequest(Request.Method.GET, DIRECTION_URL,
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                Gson gson = new Gson();
-                                JsonObject jsonObject = new JsonParser().parse(response).getAsJsonObject();
-                                JsonArray routes = jsonObject.getAsJsonArray("routes");
-                                JsonElement narrow = routes.get(0);
-                                JsonArray legs = ((JsonObject) narrow).getAsJsonArray("legs");
-                                JsonObject overview_polyline  = ((JsonObject) narrow).getAsJsonObject("overview_polyline");
-                                String line = overview_polyline.getAsJsonPrimitive("points").getAsString();
-                                directionList = PolyUtil.decode(line);
-                                Log.i(TAG, line);
-                                putLine();
-                            }
-                        }, new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                btnGetDirections.setText("That didn't work!");
-                            }
-                });
-                queue.add(stringRequest);
+                getRoute(DIRECTION_URL);
+                putLine();
+
             }
         });
-        // AutocompleteSearch
         etSearch.setFocusable(false);
         etSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 List<Place.Field> fieldList = Arrays.asList(Place.Field.ADDRESS, Place.Field.LAT_LNG, Place.Field.NAME);
-                Intent intent = new Autocomplete.IntentBuilder(
-                        AutocompleteActivityMode.OVERLAY, fieldList).build(getActivity());
+                Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fieldList).build(getActivity());
                 startActivityForResult(intent, 100);
             }
         });
+    }
+
+    private void getRoute(String DIRECTION_URL) {
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, DIRECTION_URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Gson gson = new Gson();
+                        JsonObject jsonObject = new JsonParser().parse(response).getAsJsonObject();
+                        JsonArray routes = jsonObject.getAsJsonArray("routes");
+                        JsonElement narrow = routes.get(0);
+                        JsonArray legs = ((JsonObject) narrow).getAsJsonArray("legs");
+                        JsonObject overview_polyline  = ((JsonObject) narrow).getAsJsonObject("overview_polyline");
+                        String line = overview_polyline.getAsJsonPrimitive("points").getAsString();
+                        directionList = PolyUtil.decode(line);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                btnGetDirections.setText("That didn't work!");
+            }
+        });
+        queue.add(stringRequest);
     }
 
     @Override

@@ -34,12 +34,12 @@ import java.util.Collections;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-
+    private String PARKS_URL = "https://data.seattle.gov/resource/j9km-ydkc.json";
     public static final String TAG = "MainActivity";
     final FragmentManager fragmentManager = getSupportFragmentManager();
     private BottomNavigationView bottomNavigationView;
     private boolean getInfo = false;
-    public static City myCity;
+    private City myCity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,42 +60,41 @@ public class MainActivity extends AppCompatActivity {
         prepareInfoForToday();
     }
 
-    private void prepareInfoForToday() {
-        ParseQuery<City> query = ParseQuery.getQuery(City.class);
-        query.findInBackground(new FindCallback<City>() {
-            @Override
-            public void done(List<City> city, ParseException e) {
-                myCity = city.get(0); // IF THERE WERE MORE CITYS, LOOK FOR THE ONE THE USER IS IN
-                int nowDate = Calendar.getInstance().getTime().getDate();
-                int lastCalc = myCity.getUpdatedAt().getDate();
-                if (nowDate == nowDate) {
+    private void prepareInfoForToday()  {
+        myCity = getCity();
+        int nowDate = Calendar.getInstance().getTime().getDate();
+        int lastCalc = myCity.getUpdatedAt().getDate();
+        if (nowDate == nowDate) {
 //                    for (int i = 0; i<myCity.getParks().size(); i += 20) eraseData(); // Needs polishing // TODO: MAKE SURE THIS WORKS, BUT ANOTHER DAY (NOT THAT IMPORTANT =) )
-                    String PARKS_URL = "https://data.seattle.gov/resource/j9km-ydkc.json";
-                    RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
-                    StringRequest stringRequest = new StringRequest(Request.Method.GET, PARKS_URL,
-                            new Response.Listener<String>() {
-                                @Override
-                                public void onResponse(String response) {
-                                    saveParks(response);
-                                    // Handler delay ensures it works? its possible that im capping out without it
-                                    Handler handler1 = new Handler();
-                                    handler1.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            readyMyCity();
-                                        }}, 5000);
-                                }
-                            }, new Response.ErrorListener() {
+            RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, PARKS_URL,
+                    new Response.Listener<String>() {
                         @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Log.i(TAG, "myCity?");
+                        public void onResponse(String response) {
+                            saveParks(response);
+                            Handler h = new Handler();
+                            h.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    readyMyCity();
+                                }}, 5000);
                         }
-                    });
-                    queue.add(stringRequest);
-                }
-                Log.i(TAG, "Can switch");
-            }
-        });
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {}
+            });
+            queue.add(stringRequest);
+        }
+    }
+
+    public static City getCity()  {
+        try {
+            ParseQuery<City> query = ParseQuery.getQuery(City.class);
+            City city = query.find().get(0);
+            return city;
+        } catch (Exception e) {
+            return new City();
+        }
     }
 
     private void switchFragments(int itemId) {

@@ -1,42 +1,33 @@
 package com.example.turgo.fragments;
 
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
-
 import com.example.turgo.MainActivity;
 import com.example.turgo.R;
 import com.example.turgo.adapter.ParkAdapter;
 import com.example.turgo.models.City;
 import com.example.turgo.models.Park;
-import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
-
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 public class ParksFragment extends Fragment {
-
+    private static final String TAG = "ParksFragment";
     private TextView tvPeopleAmount;
     private SeekBar sbPeopleAmount;
     private final int MAXPEOPLE = 1000;
-    private static final String TAG = "ParksFragment";
     private int[] segTree;
     private RecyclerView rvParks;
     private ParkAdapter adapter;
@@ -45,9 +36,7 @@ public class ParksFragment extends Fragment {
     private List<String> allParkIds;
     City myCity;
 
-    public ParksFragment() {
-        // Required empty public constructor
-    }
+    public ParksFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,74 +44,67 @@ public class ParksFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_parks, container, false);
     }
-    // where we actually do stuff
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         System.loadLibrary("native-lib");
 
-        ParseQuery<City> query = ParseQuery.getQuery(City.class);
-        query.findInBackground(new FindCallback<City>() {
+        myCity = MainActivity.getCity();
+        prepareVariables(myCity);
+        rvParks.setAdapter(adapter);
+        rvParks.setLayoutManager(new LinearLayoutManager(getContext()));
+        tvPeopleAmount.setText("0 People");
+        sbPeopleAmount.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
-            public void done(List<City> cities, ParseException e) {
-                myCity = cities.get(0);
-                segTree = myCity.getTree();
-                allParkIds = myCity.getParks();
-                tvPeopleAmount = view.findViewById(R.id.tvPeopleAmount);
-                sbPeopleAmount = view.findViewById(R.id.sbPeopleAmount);
-                rvParks = view.findViewById(R.id.rvParks);
-                allPark = new ArrayList<>();
-                adapter = new ParkAdapter(getContext(), allPark);
-                rvParks.setAdapter(adapter);
-                rvParks.setLayoutManager(new LinearLayoutManager(getContext()));
-
-                tvPeopleAmount.setText("0 People");
-                sbPeopleAmount.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                    @Override
-                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                        double amount = progress;
-                        amount /= 100;
-                        amount *= MAXPEOPLE;
-                        currentTarget = (int) amount;
-                        tvPeopleAmount.setText(String.valueOf(currentTarget)+" People");
-                    }
-
-                    @Override
-                    public void onStartTrackingTouch(SeekBar seekBar) {}
-
-                    @Override
-                    public void onStopTrackingTouch(SeekBar seekBar) {
-                        allPark.clear();
-                        adapter.notifyDataSetChanged();
-                        Log.i(TAG, Arrays.stream(segTree).boxed().collect(Collectors.toList()).toString());
-                        int[] selected = queueTree(segTree, currentTarget);
-                        List<Integer> picked = Arrays.stream(selected).boxed().collect(Collectors.toList());
-                        Log.i(TAG, picked.toString());
-                        List<String> parkId = new ArrayList<>();
-
-                        ParseQuery<Park> query = ParseQuery.getQuery(Park.class);
-                        for (Integer i : picked) {
-                            parkId.add(allParkIds.get(i));
-//                    query.whereEqualTo("objectID", )
-                            try {
-                                allPark.add(query.get(String.valueOf(allParkIds.get(i))));
-                                adapter.notifyDataSetChanged();
-                            } catch (ParseException e) {}
-                        }
-                    }
-                });
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                updateCount(progress);
+            }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                getNewParkList();
             }
         });
-
-
-
-
-
     }
+
+    private void prepareVariables(City city) {
+        myCity = city;
+        segTree = myCity.getTree();
+        allParkIds = myCity.getParks();
+        tvPeopleAmount = getView().findViewById(R.id.tvPeopleAmount);
+        sbPeopleAmount = getView().findViewById(R.id.sbPeopleAmount);
+        rvParks = getView().findViewById(R.id.rvParks);
+        allPark = new ArrayList<>();
+        adapter = new ParkAdapter(getContext(), allPark);
+    }
+
+    private void getNewParkList() {
+        allPark.clear();
+        adapter.notifyDataSetChanged();
+        int[] selected = queueTree(segTree, currentTarget);
+        List<Integer> picked = Arrays.stream(selected).boxed().collect(Collectors.toList());
+        List<String> parkId = new ArrayList<>();
+        ParseQuery<Park> query = ParseQuery.getQuery(Park.class);
+        for (Integer i : picked) {
+            parkId.add(allParkIds.get(i));
+            try {
+                allPark.add(query.get(String.valueOf(allParkIds.get(i))));
+                adapter.notifyDataSetChanged();
+            } catch (ParseException e) {}
+        }
+    }
+
+    private void updateCount(double progress) {
+        progress /= 100;
+        progress *= MAXPEOPLE;
+        currentTarget = (int) progress;
+        tvPeopleAmount.setText(String.valueOf(currentTarget)+" People");
+    }
+
     private native int[] queueTree(int[] segmentedTree, int target);
 }

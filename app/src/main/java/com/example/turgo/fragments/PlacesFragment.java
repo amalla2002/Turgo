@@ -207,7 +207,7 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
                 place2 = new MarkerOptions().position(destination).title("Default destination");
             } else {
                 destination = new LatLng(VisitParkFragment.lat.doubleValue(), VisitParkFragment.lng.doubleValue());
-                place2 = new MarkerOptions().position(destination).title("Default destination");
+                place2 = new MarkerOptions().position(destination).title("destination");
             }
 
             myCity = MainActivity.getCity();

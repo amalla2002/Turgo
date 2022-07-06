@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MainActivity";
     public static Boolean visitingPark = false;
     public static Number visitingWith = 0;
+    public static Number visitingPos = -1;
     private String PARKS_URL = "https://data.seattle.gov/resource/j9km-ydkc.json";
     final FragmentManager fragmentManager = getSupportFragmentManager();
     private BottomNavigationView bottomNavigationView;

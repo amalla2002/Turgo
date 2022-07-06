@@ -26,6 +26,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.turgo.MainActivity;
 import com.example.turgo.R;
+import com.example.turgo.models.City;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -67,6 +68,8 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
     private boolean showMap = false;
     private LocationManager locationManager;
     private FusedLocationProviderClient fusedLocationProviderClient;
+    private Button btnLeavePark;
+    private City myCity;
     // seattle api endpoint https://data.seattle.gov/resource/j9km-ydkc.json
 
     public PlacesFragment() { }
@@ -84,8 +87,11 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        System.loadLibrary("native-lib");
         etSearch = view.findViewById(R.id.etSearch);
         btnGetDirections = view.findViewById(R.id.btnGetDirections);
+        btnLeavePark = view.findViewById(R.id.btnLeavePark);
+        btnLeavePark.setVisibility(View.INVISIBLE);
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.mapFragment);
         mapFragment.getMapAsync(this::onMapReady);
 
@@ -113,7 +119,29 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
                 startActivityForResult(intent, 100);
             }
         });
+        
+        btnLeavePark.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                removePeople();
+                normalizeView();
+            }
+        });
+    }
 
+    private void normalizeView() {
+        map.clear();
+        btnLeavePark.setVisibility(View.INVISIBLE);
+        btnGetDirections.setVisibility(View.VISIBLE);
+    }
+
+    private void removePeople() {
+        int val = (int) MainActivity.visitingWith;
+        int pos = (int) MainActivity.visitingPos;
+        MainActivity.visitingPark = false;
+        MainActivity.visitingWith = 0;
+        MainActivity.visitingPos = -1;
+        myCity.setTree(updateTree(myCity.getTree(), pos, val));
     }
 
     private void getDirection() {
@@ -172,8 +200,17 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(@NonNull GoogleMap googleMap) {
         map = googleMap;
         if (MainActivity.visitingPark) {
-            destination = new LatLng(47.615698, -122.332956);
-            place2 = new MarkerOptions().position(destination).title("Default destination");
+            btnGetDirections.setVisibility(View.INVISIBLE);
+            btnLeavePark.setVisibility(View.VISIBLE);
+            if (VisitParkFragment.lat.doubleValue() == 0) {
+                destination = new LatLng(47.615698, -122.332956);
+                place2 = new MarkerOptions().position(destination).title("Default destination");
+            } else {
+                destination = new LatLng(VisitParkFragment.lat.doubleValue(), VisitParkFragment.lng.doubleValue());
+                place2 = new MarkerOptions().position(destination).title("Default destination");
+            }
+
+            myCity = MainActivity.getCity();
             getDirection();
         }
     }
@@ -233,4 +270,6 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
             ActivityCompat.requestPermissions(getActivity(), new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 44);
         }
     }
+
+    private native int[] updateTree(int[] segmentedTree, int pos, int val);
 }

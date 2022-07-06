@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 
 public class VisitParkFragment extends Fragment {
     private static final String TAG = "VisitParkFragment";
-    public static Boolean visitingPark;
+    public static Number lat, lng;
     private Button btnParkVisitState;
     private EditText etNumOfPeople;
     private Quintet<String, String, Number, Number, Number> park;
@@ -56,13 +56,13 @@ public class VisitParkFragment extends Fragment {
         btnParkVisitState.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                showRoute(updateInfo());
+                prepareInfo();
+                showRoute();
             }
         });
     }
 
-    private int updateInfo() {
+    private int prepareInfo() {
         int pos = myCity.getParks().indexOf(park.getValue0());
         int val;
         try {
@@ -72,21 +72,20 @@ public class VisitParkFragment extends Fragment {
             return (int) (1e9+7);
         }
         MainActivity.visitingPark = true;
-        MainActivity.visitingWith = val;
+        MainActivity.visitingWith = val*-1;
+        MainActivity.visitingPos = pos;
+        lat = park.getValue3();
+        lng = park.getValue4();
         myCity.setTree(updateTree(myCity.getTree(), pos, val));
         myCity.saveInBackground();
         return val;
     }
 
-    private void showRoute(int val) {
+    private void showRoute() {
         FragmentManager fragmentManager = getParentFragmentManager();
         Fragment fragment = new PlacesFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt("inPark", val);
-        fragment.setArguments(bundle);
         fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
     }
-
 
     private native int[] updateTree(int tree[], int pos, int val);
 }

@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.MenuItem;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -18,14 +17,11 @@ import com.example.turgo.fragments.ParksFragment;
 import com.example.turgo.fragments.PlacesFragment;
 import com.example.turgo.fragments.ProfileFragment;
 import com.example.turgo.models.City;
-import com.example.turgo.models.Park;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
 import java.util.ArrayList;
@@ -34,12 +30,15 @@ import java.util.Collections;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    private String PARKS_URL = "https://data.seattle.gov/resource/j9km-ydkc.json";
     public static final String TAG = "MainActivity";
+    public static Boolean visitingPark = false;
+    public static Number visitingWith = 0;
+    private String PARKS_URL = "https://data.seattle.gov/resource/j9km-ydkc.json";
     final FragmentManager fragmentManager = getSupportFragmentManager();
     private BottomNavigationView bottomNavigationView;
-    private boolean getInfo = false;
     private City myCity;
+    private List<String> hours, parkNames;
+    private List<Number> latitudes , longitudes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,19 +64,13 @@ public class MainActivity extends AppCompatActivity {
         int nowDate = Calendar.getInstance().getTime().getDate();
         int lastCalc = myCity.getUpdatedAt().getDate();
         if (nowDate == nowDate) {
-//                    for (int i = 0; i<myCity.getParks().size(); i += 20) eraseData(); // Needs polishing // TODO: MAKE SURE THIS WORKS, BUT ANOTHER DAY (NOT THAT IMPORTANT =) )
             RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
             StringRequest stringRequest = new StringRequest(Request.Method.GET, PARKS_URL,
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
                             saveParks(response);
-                            Handler h = new Handler();
-                            h.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    readyMyCity();
-                                }}, 5000);
+                            readyMyCity();
                         }
                     }, new Response.ErrorListener() {
                 @Override
@@ -115,49 +108,36 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void readyMyCity() {
-        List<String> parksOfCity = new ArrayList<>();
-        ParseQuery<Park> query = ParseQuery.getQuery(Park.class);
-        query.setLimit(200);
-        List<Park> parks = null;
-        try {parks = query.find();  } catch (ParseException e) {}
-        for (Park park : parks) parksOfCity.add(park.getObjectId());
-        myCity.setParks(parksOfCity);
-        myCity.setPeople(Collections.nCopies(parksOfCity.size(), 0));
-        List<Integer> that = Collections.nCopies(parksOfCity.size(), 0);
+        myCity.setParks(parkNames);
+        myCity.setPeople(Collections.nCopies(parkNames.size(), 0));
+        myCity.setHours(hours);
+        myCity.setLatitude(latitudes);
+        myCity.setLongitude(longitudes);
+        List<Integer> that = Collections.nCopies(parkNames.size(), 0);
         myCity.setTree((buildTree(that.stream().mapToInt(Integer::intValue).toArray())));
         try { myCity.save();  } catch (ParseException e) {}
     }
 
     private void saveParks(String response) {
-        Gson gson = new Gson();
         JsonArray jsonParks = new JsonParser().parse(response).getAsJsonArray();
+        parkNames = new ArrayList<>(); hours = new ArrayList<>(); latitudes = new ArrayList<>(); longitudes = new ArrayList<>();
         for (int i = 0; i < jsonParks.size(); ++i) {
             JsonObject thisPark = jsonParks.get(i).getAsJsonObject();
-            Park park = new Park();
-            park.setParkName(thisPark.get("name").toString());
-            park.setNpeople(0);
+            parkNames.add(thisPark.get("name").toString());
             try {
                 JsonObject loc = thisPark.get("location").getAsJsonObject();
-                park.setLatitude(loc.get("latitude").getAsDouble());
-                park.setLongitude(loc.get("longitude").getAsDouble());
-            } catch (Exception e) {}
-            try {
-                park.setHours(thisPark.get("hours").getAsString());
-            } catch (Exception e) {}
-            park.saveInBackground();
-        }
-    }
-
-    public void eraseData() {
-        ParseQuery<Park> query = ParseQuery.getQuery(Park.class);
-        query.setLimit(20);
-        query.findInBackground(new FindCallback<Park>() {
-            @Override
-            public void done(List<Park> parks, ParseException e) {
-                if (parks == null) return;
-                for (Park park : parks) park.deleteInBackground();
+                latitudes.add(loc.get("latitude").getAsDouble());
+                longitudes.add(loc.get("longitude").getAsDouble());
+            } catch (Exception e) {
+                latitudes.add(0);
+                longitudes.add(0);
             }
-        });
+            try {
+                hours.add(thisPark.get("hours").getAsString());
+            } catch (Exception e) {
+                hours.add("Not provided");
+            }
+        }
     }
     private native int[] buildTree(int[] people);
 }

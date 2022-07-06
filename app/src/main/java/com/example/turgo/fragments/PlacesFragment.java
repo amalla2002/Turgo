@@ -10,6 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +24,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.turgo.MainActivity;
 import com.example.turgo.R;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -85,14 +88,20 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
         btnGetDirections = view.findViewById(R.id.btnGetDirections);
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.mapFragment);
         mapFragment.getMapAsync(this::onMapReady);
+
+        if (place1 == null) {
+            origin = new LatLng(47.629229, -122.341229);
+            place1 = new MarkerOptions().position(origin).title("Default origin");
+        }
+        if (place2 == null) {
+            destination = new LatLng(47.615698, -122.332956);
+            place2 = new MarkerOptions().position(destination).title("Default destination");
+        }
+
         btnGetDirections.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setMyLocation();
-                String DIRECTION_URL = getUrl(place1.getPosition(), place2.getPosition(), "steps");
-                getRoute(DIRECTION_URL);
-                putLine();
-
+                getDirection();
             }
         });
         etSearch.setFocusable(false);
@@ -104,6 +113,21 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
                 startActivityForResult(intent, 100);
             }
         });
+
+    }
+
+    private void getDirection() {
+        setMyLocation();
+        String DIRECTION_URL = getUrl(place1.getPosition(), place2.getPosition(), "steps");
+        getRoute(DIRECTION_URL);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                putLine();
+            }
+        }, 3000);
+
     }
 
     private void getRoute(String DIRECTION_URL) {
@@ -112,7 +136,6 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Gson gson = new Gson();
                         JsonObject jsonObject = new JsonParser().parse(response).getAsJsonObject();
                         JsonArray routes = jsonObject.getAsJsonArray("routes");
                         JsonElement narrow = routes.get(0);
@@ -148,10 +171,23 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         map = googleMap;
+        if (MainActivity.visitingPark) {
+            destination = new LatLng(47.615698, -122.332956);
+            place2 = new MarkerOptions().position(destination).title("Default destination");
+            getDirection();
+        }
     }
 
     public void putLine() {
         map.clear();
+        if (place1 == null) {
+            origin = new LatLng(47.629229, -122.341229);
+            place1 = new MarkerOptions().position(origin).title("Default origin");
+        }
+        if (place2 == null) {
+            destination = new LatLng(47.615698, -122.332956);
+            place2 = new MarkerOptions().position(destination).title("Default destination");
+        }
         map.addMarker(place1);
         map.addMarker(place2);
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
@@ -161,6 +197,7 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
         int padding = 100;
         CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
         map.animateCamera(cu);// googleMap.moveCamera(cu);
+
         Polyline polyline1 = map.addPolyline( new PolylineOptions().addAll(directionList));
     }
 
@@ -186,6 +223,8 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
                         place1 = new MarkerOptions().position(origin).title("origin");
                     } else {
                         Log.i(TAG, "NULL LOCATION");
+                        origin = new LatLng(47.629229, -122.341229);
+                        place1 = new MarkerOptions().position(origin).title("Default origin");
                     }
 
                 }

@@ -18,14 +18,18 @@ import com.example.turgo.R;
 import com.example.turgo.adapter.ParkAdapter;
 import com.example.turgo.models.City;
 import com.example.turgo.models.Park;
+
+import org.javatuples.Quintet;
+
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class VisitParkFragment extends Fragment {
     private static final String TAG = "VisitParkFragment";
+    public static Boolean visitingPark;
     private Button btnParkVisitState;
     private EditText etNumOfPeople;
-    private Park park;
+    private Quintet<String, String, Number, Number, Number> park;
     private City myCity;
 
     public VisitParkFragment() {}
@@ -46,43 +50,43 @@ public class VisitParkFragment extends Fragment {
         System.loadLibrary("native-lib");
         btnParkVisitState = view.findViewById(R.id.btnParkVisitState);
         etNumOfPeople = view.findViewById(R.id.etNumOfPeople);
-        park = new Park();
         myCity = MainActivity.getCity();
         park = ParkAdapter.clickedPark;
 
         btnParkVisitState.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int pos = myCity.getParks().indexOf(park.getObjectId());
-                int val;
-                try {
-                    val = Integer.parseInt(etNumOfPeople.getText().toString());
-//                    val *= -1;
-                } catch (Exception e) {
-                    Toast.makeText(getContext(), "Please indicate num of people", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                Log.i(TAG, btnParkVisitState.getText().toString());
-                if (btnParkVisitState.getText().toString().equals("GO")) {
-                    btnParkVisitState.setText("Leave");
-                }
-                else {
-                    val *= -1;
-                    FragmentManager fragmentManager = getParentFragmentManager();
-                    fragmentManager.beginTransaction().replace(R.id.flContainer, new PlacesFragment()).commit();
-                }
-                myCity.setTree(updateTree(myCity.getTree(), pos, val));
-                myCity.saveInBackground();
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.i(TAG, Arrays.stream(myCity.getTree()).boxed().collect(Collectors.toList()).toString());
-                    }
-                }, 5000);
+
+                showRoute(updateInfo());
             }
         });
     }
+
+    private int updateInfo() {
+        int pos = myCity.getParks().indexOf(park.getValue0());
+        int val;
+        try {
+            val = Integer.parseInt(etNumOfPeople.getText().toString());
+        } catch (Exception e) {
+            Toast.makeText(getContext(), "Please indicate num of people", Toast.LENGTH_SHORT).show();
+            return (int) (1e9+7);
+        }
+        MainActivity.visitingPark = true;
+        MainActivity.visitingWith = val;
+        myCity.setTree(updateTree(myCity.getTree(), pos, val));
+        myCity.saveInBackground();
+        return val;
+    }
+
+    private void showRoute(int val) {
+        FragmentManager fragmentManager = getParentFragmentManager();
+        Fragment fragment = new PlacesFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("inPark", val);
+        fragment.setArguments(bundle);
+        fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
+    }
+
 
     private native int[] updateTree(int tree[], int pos, int val);
 }

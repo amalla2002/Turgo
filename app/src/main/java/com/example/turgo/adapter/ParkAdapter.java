@@ -15,14 +15,15 @@ import com.example.turgo.R;
 import com.example.turgo.fragments.VisitParkFragment;
 import com.example.turgo.models.Park;
 import java.util.List;
+import org.javatuples.Quintet;
 
 public class ParkAdapter extends RecyclerView.Adapter<ParkAdapter.ViewHolder> {
     public final String TAG = "ParkAdapter";
     private Context context;
-    private List<Park> parks;
-    public static Park clickedPark;
+    private List<Quintet<String, String, Number, Number, Number> > parks;
+    public static Quintet<String, String, Number, Number, Number> clickedPark;
 
-    public ParkAdapter(Context context, List<Park> parks) {
+    public ParkAdapter(Context context, List<Quintet<String, String, Number, Number, Number> > parks) {
         this.context = context;
         this.parks = parks;
     }
@@ -38,7 +39,7 @@ public class ParkAdapter extends RecyclerView.Adapter<ParkAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Park park = parks.get(position);
+        Quintet<String, String, Number, Number, Number> park = parks.get(position);
         holder.bind(park);
     }
 
@@ -54,11 +55,10 @@ public class ParkAdapter extends RecyclerView.Adapter<ParkAdapter.ViewHolder> {
             btnGoToPark = itemView.findViewById(R.id.btnGoToPark);
         }
 
-        public void bind(Park park) {
-            tvParkName.setText(park.getParkName());
-            tvPeopleOnPark.setText(String.valueOf(park.getNpeople())+" People here");
-            if (park.getHours()==null) tvHours.setText("Hours not provided");
-            else tvHours.setText(park.getHours());
+        public void bind(Quintet<String, String, Number, Number, Number> park) {
+            tvParkName.setText(park.getValue0());
+            tvPeopleOnPark.setText(String.valueOf(park.getValue2())+" People here");
+            tvHours.setText(park.getValue1());
             btnGoToPark.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -74,7 +74,7 @@ public class ParkAdapter extends RecyclerView.Adapter<ParkAdapter.ViewHolder> {
             notifyDataSetChanged();
         }
 
-        public void addAll(List<Park> list) {
+        public void addAll(List<Quintet<String, String, Number, Number, Number>> list) {
             parks.addAll(list);
             notifyDataSetChanged();
         }

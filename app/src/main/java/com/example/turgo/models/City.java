@@ -15,6 +15,9 @@ public class City extends ParseObject {
     public static final String KEY_PARKS = "parks";
     public static final String KEY_PEOPLE = "people";
     public static final String KEY_TREE = "tree";
+    public static final String KEY_HOURS = "hours";
+    public static final String KEY_LAT = "latitude";
+    public static final String KEY_LNG = "longitude";
 
     public City() {}
 
@@ -32,6 +35,15 @@ public class City extends ParseObject {
         List<Integer> that = getList(KEY_TREE);
         return that.stream().mapToInt(Integer::intValue).toArray();
     }
+    public List<String> getHours() {
+        return getList(KEY_HOURS);
+    }
+    public List<Number> getLatitude() {
+        return getList(KEY_LAT);
+    }
+    public List<Number> getLongitude() {
+        return getList(KEY_LNG);
+    }
 
     public void setLocation(String location) {
         put(KEY_LOCATION, location);
@@ -44,5 +56,14 @@ public class City extends ParseObject {
     }
     public void setTree(int[] tree) {
         put(KEY_TREE, Arrays.stream(tree).boxed().collect(Collectors.toList()));
+    }
+    public void setHours(List<String> hours) {
+         put(KEY_HOURS, hours);
+    }
+    public void setLatitude(List<Number> latitudes) {
+         put(KEY_LAT, latitudes);
+    }
+    public void setLongitude(List<Number> longitudes) {
+         put(KEY_LNG, longitudes);
     }
 }

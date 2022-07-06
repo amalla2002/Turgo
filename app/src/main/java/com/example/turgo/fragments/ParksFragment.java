@@ -6,6 +6,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +17,9 @@ import com.example.turgo.MainActivity;
 import com.example.turgo.R;
 import com.example.turgo.adapter.ParkAdapter;
 import com.example.turgo.models.City;
-import com.example.turgo.models.Park;
-import com.parse.ParseException;
-import com.parse.ParseQuery;
+
+import org.javatuples.Quintet;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,10 +33,10 @@ public class ParksFragment extends Fragment {
     private int[] segTree;
     private RecyclerView rvParks;
     private ParkAdapter adapter;
-    private List<Park> allPark;
     private int currentTarget;
-    private List<String> allParkIds;
-    City myCity;
+    private City myCity;
+    private List<Quintet<String, String, Number, Number, Number>> allParks;
+    private List<Quintet<String, String, Number, Number, Number>> parksInView;
 
     public ParksFragment() {}
 
@@ -75,28 +77,27 @@ public class ParksFragment extends Fragment {
     private void prepareVariables(City city) {
         myCity = city;
         segTree = myCity.getTree();
-        allParkIds = myCity.getParks();
+        List<String> names = myCity.getParks();
+        List<String> hours = myCity.getHours();
+        List<Number> people = Arrays.stream(myCity.getPeople()).boxed().collect(Collectors.toList());
+        List<Number> lats = myCity.getLatitude();
+        List<Number> lng = myCity.getLongitude();
+        allParks = new ArrayList<>();
+        for (int i = 0; i<names.size(); ++i) allParks.add(Quintet.with(names.get(i), hours.get(i), people.get(i), lats.get(i), lng.get(i)));
         tvPeopleAmount = getView().findViewById(R.id.tvPeopleAmount);
         sbPeopleAmount = getView().findViewById(R.id.sbPeopleAmount);
         rvParks = getView().findViewById(R.id.rvParks);
-        allPark = new ArrayList<>();
-        adapter = new ParkAdapter(getContext(), allPark);
+        parksInView = new ArrayList<>();
+        adapter = new ParkAdapter(getContext(), parksInView);
     }
 
     private void getNewParkList() {
-        allPark.clear();
+        parksInView.clear();
         adapter.notifyDataSetChanged();
         int[] selected = queueTree(segTree, currentTarget);
         List<Integer> picked = Arrays.stream(selected).boxed().collect(Collectors.toList());
-        List<String> parkId = new ArrayList<>();
-        ParseQuery<Park> query = ParseQuery.getQuery(Park.class);
-        for (Integer i : picked) {
-            parkId.add(allParkIds.get(i));
-            try {
-                allPark.add(query.get(String.valueOf(allParkIds.get(i))));
-                adapter.notifyDataSetChanged();
-            } catch (ParseException e) {}
-        }
+        parksInView.addAll(picked.stream().map(i -> allParks.get(i)).collect(Collectors.toList()));
+        adapter.notifyDataSetChanged();
     }
 
     private void updateCount(double progress) {

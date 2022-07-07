@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import android.os.Handler;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,14 +14,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import com.example.turgo.MainActivity;
+import com.example.turgo.ParseApplication;
 import com.example.turgo.R;
 import com.example.turgo.adapter.ParkAdapter;
 import com.example.turgo.models.City;
-import com.example.turgo.models.Park;
 
 import org.javatuples.Quintet;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class VisitParkFragment extends Fragment {
@@ -56,7 +57,9 @@ public class VisitParkFragment extends Fragment {
         btnParkVisitState.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                prepareInfo();
+                Integer Npeople = prepareInfo();
+                if(Npeople == 1e9+7) return;
+                ParseApplication.parkVeryPopulated(park.getValue0(), Npeople);
                 showRoute();
             }
         });
@@ -76,9 +79,11 @@ public class VisitParkFragment extends Fragment {
         MainActivity.visitingPos = pos;
         lat = park.getValue3();
         lng = park.getValue4();
-        myCity.setTree(updateTree(myCity.getTree(), pos, val));
+        int[] updatedTree = updateTree(myCity.getTree(), pos, val);
+        List<Integer> listTree = Arrays.stream(updatedTree).boxed().collect(Collectors.toList());
+        myCity.setTree(updatedTree);
         myCity.saveInBackground();
-        return val;
+        return listTree.get((listTree.size()-24)/2 + pos);
     }
 
     private void showRoute() {

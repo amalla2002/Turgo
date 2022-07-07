@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         System.loadLibrary("native-lib");
-        String google_api = getString(R.string.google_api_key);
+        String google_api = getString(R.string.google_api_key_mine);
         Places.initialize(getApplicationContext(), google_api);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.action_profile);
@@ -110,7 +110,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void readyMyCity() {
         myCity.setParks(parkNames);
-        myCity.setPeople(Collections.nCopies(parkNames.size(), 0));
         myCity.setHours(hours);
         myCity.setLatitude(latitudes);
         myCity.setLongitude(longitudes);

@@ -244,7 +244,7 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
         String mode = "mode=" + directionMode;
         String parameters = str_origin + "&" + str_dest + "&" + mode;
         String output = "json";
-        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" +getString(R.string.google_api_key);
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" +getString(R.string.google_api_key_mine   );
         return url;
     }
 

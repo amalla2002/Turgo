@@ -27,10 +27,6 @@ public class City extends ParseObject {
     public List<String> getParks() {
         return getList(KEY_PARKS);
     }
-    public int[] getPeople() {
-        List<Integer> that = getList(KEY_PEOPLE);
-        return that.stream().mapToInt(Integer::intValue).toArray();
-    }
     public int[] getTree() {
         List<Integer> that = getList(KEY_TREE);
         return that.stream().mapToInt(Integer::intValue).toArray();
@@ -51,9 +47,7 @@ public class City extends ParseObject {
     public void setParks(List<String> parks) {
         put(KEY_PARKS, parks);
     }
-    public void setPeople(List<Integer> people) {
-        put(KEY_PEOPLE, people);
-    }
+
     public void setTree(int[] tree) {
         put(KEY_TREE, Arrays.stream(tree).boxed().collect(Collectors.toList()));
     }

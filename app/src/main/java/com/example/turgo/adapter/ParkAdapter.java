@@ -8,12 +8,11 @@ import android.widget.Button;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.turgo.R;
 import com.example.turgo.fragments.VisitParkFragment;
-import com.example.turgo.models.Park;
+
 import java.util.List;
 import org.javatuples.Quintet;
 

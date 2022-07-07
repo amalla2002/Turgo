@@ -142,6 +142,7 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
         MainActivity.visitingWith = 0;
         MainActivity.visitingPos = -1;
         myCity.setTree(updateTree(myCity.getTree(), pos, val));
+        myCity.saveInBackground();
     }
 
     private void getDirection() {
@@ -155,7 +156,6 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
                 putLine();
             }
         }, 3000);
-
     }
 
     private void getRoute(String DIRECTION_URL) {
@@ -209,7 +209,6 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
                 destination = new LatLng(VisitParkFragment.lat.doubleValue(), VisitParkFragment.lng.doubleValue());
                 place2 = new MarkerOptions().position(destination).title("destination");
             }
-
             myCity = MainActivity.getCity();
             getDirection();
         }
@@ -234,7 +233,6 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
         int padding = 100;
         CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
         map.animateCamera(cu);// googleMap.moveCamera(cu);
-
         Polyline polyline1 = map.addPolyline( new PolylineOptions().addAll(directionList));
     }
 
@@ -263,7 +261,6 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
                         origin = new LatLng(47.629229, -122.341229);
                         place1 = new MarkerOptions().position(origin).title("Default origin");
                     }
-
                 }
             });
         } else { // when permision denied

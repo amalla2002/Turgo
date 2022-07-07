@@ -56,7 +56,7 @@ public class ParkAdapter extends RecyclerView.Adapter<ParkAdapter.ViewHolder> {
 
         public void bind(Quintet<String, String, Number, Number, Number> park) {
             tvParkName.setText(park.getValue0());
-            tvPeopleOnPark.setText(String.valueOf(park.getValue2())+" People here");
+            tvPeopleOnPark.setText((park.getValue2()) + " People here");
             tvHours.setText(park.getValue1());
             btnGoToPark.setOnClickListener(new View.OnClickListener() {
                 @Override

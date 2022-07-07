@@ -59,7 +59,7 @@ public class VisitParkFragment extends Fragment {
             public void onClick(View v) {
                 Integer Npeople = prepareInfo();
                 if(Npeople == 1e9+7) return;
-                ParseApplication.parkVeryPopulated(park.getValue0(), Npeople);
+                if (Npeople>500) ParseApplication.parkVeryPopulated(park.getValue0(), Npeople);
                 showRoute();
             }
         });

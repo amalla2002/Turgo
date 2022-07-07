@@ -80,7 +80,7 @@ public class ParksFragment extends Fragment {
         List<String> names = myCity.getParks();
         List<String> hours = myCity.getHours();
         List<Number> entireTree = Arrays.stream(myCity.getTree()).boxed().collect(Collectors.toList());
-        List<Number> people = entireTree.subList((entireTree.size()-1)/2, (entireTree.size()-1)/2+names.size());
+        List<Number> people = entireTree.subList((entireTree.size()-24)/2, (entireTree.size()-24)/2+names.size());
         List<Number> lats = myCity.getLatitude();
         List<Number> lng = myCity.getLongitude();
         allParks = new ArrayList<>();

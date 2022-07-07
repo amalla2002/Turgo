@@ -1,8 +1,13 @@
 package com.example.turgo.fragments;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -12,12 +17,15 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import android.os.Handler;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -54,6 +62,8 @@ import com.google.gson.JsonParser;
 import com.google.maps.android.PolyUtil;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
 public class PlacesFragment extends Fragment implements OnMapReadyCallback {
     public static final String TAG = "PlacesFragment";
@@ -70,6 +80,13 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
     private FusedLocationProviderClient fusedLocationProviderClient;
     private Button btnLeavePark;
     private City myCity;
+    private SensorManager sensorManager;
+    private float accel;
+    private float accelCurrent;
+    private float accelLast;
+    private CharSequence summary;
+    private TextToSpeech TTS;
+
     // seattle api endpoint https://data.seattle.gov/resource/j9km-ydkc.json
 
     public PlacesFragment() { }
@@ -94,6 +111,12 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
         btnLeavePark.setVisibility(View.INVISIBLE);
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.mapFragment);
         mapFragment.getMapAsync(this::onMapReady);
+        sensorManager = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
+        Objects.requireNonNull(sensorManager).registerListener(mSensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+                SensorManager.SENSOR_DELAY_NORMAL);
+        accel = 10f;
+        accelCurrent = SensorManager.GRAVITY_EARTH;
+        accelLast = SensorManager.GRAVITY_EARTH;
 
         if (place1 == null) {
             origin = new LatLng(47.629229, -122.341229);
@@ -128,6 +151,60 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
             }
         });
     }
+    private final SensorEventListener mSensorListener = new SensorEventListener() {
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            float x = event.values[0];
+            float y = event.values[1];
+            float z = event.values[2];
+            accelLast = accelCurrent;
+            accelCurrent = (float) Math.sqrt((double) (x * x + y * y + z * z));
+            float delta = accelCurrent - accelLast;
+            accel = accel * 0.9f + delta;
+            if (accel > 12) {
+                // TODO: read summary if user has selected a place
+                summary = "Testing the text to speech functionality";
+                TTS = new TextToSpeech(getContext(), new TextToSpeech.OnInitListener() {
+                    @Override
+                    public void onInit(int status) {
+                        if (status!=TextToSpeech.ERROR) {
+                            TTS.setLanguage(Locale.UK);
+//                            TTS.setPitch(0.1f);
+//                            TTS.setSpeechRate(0.1f);
+                            Log.i(TAG, "language set");
+                        }
+                    }
+                });
+                TTS.speak(summary, TextToSpeech.QUEUE_FLUSH, null, "42");
+                Toast.makeText(getContext(), "Shake event detected", Toast.LENGTH_SHORT).show();
+            }
+        }
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+        }
+    };
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (TTS != null) {
+            TTS.stop();
+            TTS.shutdown();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+                SensorManager.SENSOR_DELAY_NORMAL);
+        super.onResume();
+    }
+    @Override
+    public void onPause() {
+        sensorManager.unregisterListener(mSensorListener);
+        super.onPause();
+    }
+
 
     private void normalizeView() {
         map.clear();

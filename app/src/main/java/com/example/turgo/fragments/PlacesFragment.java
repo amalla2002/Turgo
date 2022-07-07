@@ -85,7 +85,7 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
     private float accelCurrent;
     private float accelLast;
     private CharSequence summary;
-    private TextToSpeech TTS;
+    private static TextToSpeech TTS;
 
     // seattle api endpoint https://data.seattle.gov/resource/j9km-ydkc.json
 
@@ -161,21 +161,23 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
             accelCurrent = (float) Math.sqrt((double) (x * x + y * y + z * z));
             float delta = accelCurrent - accelLast;
             accel = accel * 0.9f + delta;
-            if (accel > 12) {
+            if (accel > 7) {
                 // TODO: read summary if user has selected a place
-                summary = "Testing the text to speech functionality";
-                TTS = new TextToSpeech(getContext(), new TextToSpeech.OnInitListener() {
+                String text = "Testing the text to speech functionality";
+                TTS = new TextToSpeech(getActivity(), new TextToSpeech.OnInitListener() {
                     @Override
                     public void onInit(int status) {
-                        if (status!=TextToSpeech.ERROR) {
-                            TTS.setLanguage(Locale.UK);
-//                            TTS.setPitch(0.1f);
-//                            TTS.setSpeechRate(0.1f);
-                            Log.i(TAG, "language set");
+                        if (status == TextToSpeech.SUCCESS) {
+                            int result = TTS.setLanguage(Locale.US);
+                            TTS.setPitch(0.1f);
+                            TTS.setSpeechRate(0.1f);
+                            TTS.speak(text, TextToSpeech.QUEUE_FLUSH, null);
                         }
                     }
                 });
-                TTS.speak(summary, TextToSpeech.QUEUE_FLUSH, null, "42");
+//
+
+//                TTS.speak(summary, TextToSpeech.QUEUE_FLUSH, null, "42");
                 Toast.makeText(getContext(), "Shake event detected", Toast.LENGTH_SHORT).show();
             }
         }

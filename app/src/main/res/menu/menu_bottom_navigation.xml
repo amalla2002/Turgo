@@ -17,4 +17,9 @@
         android:icon="@android:drawable/ic_menu_mapmode"
         android:title="Parks"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/action_flights"
+        android:icon="@android:drawable/ic_menu_send"
+        android:title="Flights"
+        app:showAsAction="always" />
 </menu>

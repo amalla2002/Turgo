@@ -13,6 +13,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.turgo.fragments.FlightsFragment;
 import com.example.turgo.fragments.ParksFragment;
 import com.example.turgo.fragments.PlacesFragment;
 import com.example.turgo.fragments.ProfileFragment;
@@ -64,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         myCity = getCity();
         int nowDate = Calendar.getInstance().getTime().getDate();
         int lastCalc = myCity.getUpdatedAt().getDate();
-        if (nowDate == nowDate) {
+        if (nowDate != nowDate) {
             RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
             StringRequest stringRequest = new StringRequest(Request.Method.GET, PARKS_URL,
                     new Response.Listener<String>() {
@@ -99,6 +100,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.action_places:
                 fragment = new PlacesFragment();
+                break;
+            case R.id.action_flights:
+                fragment = new FlightsFragment();
                 break;
             case R.id.action_profile:
             default:

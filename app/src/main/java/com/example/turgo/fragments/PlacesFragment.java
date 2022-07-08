@@ -169,8 +169,8 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
                     public void onInit(int status) {
                         if (status == TextToSpeech.SUCCESS) {
                             int result = TTS.setLanguage(Locale.US);
-                            TTS.setPitch(0.1f);
-                            TTS.setSpeechRate(0.1f);
+//                            TTS.setPitch(0.1f);
+//                            TTS.setSpeechRate(1.0f);
                             TTS.speak(text, TextToSpeech.QUEUE_FLUSH, null);
                         }
                     }

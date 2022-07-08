@@ -8,6 +8,7 @@
         <entry key="app/src/main/res/layout/activity_register.xml" value="0.192481884057971" />
         <entry key="app/src/main/res/layout/fragment_auto_complete.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_flight.xml" value="0.15450861195542046" />
+        <entry key="app/src/main/res/layout/fragment_flights.xml" value="0.335" />
         <entry key="app/src/main/res/layout/fragment_maps.xml" value="0.29393115942028986" />
         <entry key="app/src/main/res/layout/fragment_parks.xml" value="0.2992" />
         <entry key="app/src/main/res/layout/fragment_places.xml" value="0.25" />

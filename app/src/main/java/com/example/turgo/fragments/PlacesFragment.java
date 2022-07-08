@@ -161,7 +161,7 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
             accelCurrent = (float) Math.sqrt((double) (x * x + y * y + z * z));
             float delta = accelCurrent - accelLast;
             accel = accel * 0.9f + delta;
-            if (accel > 7) {
+            if (accel > 12) {
                 // TODO: read summary if user has selected a place
                 String text = "Testing the text to speech functionality";
                 TTS = new TextToSpeech(getActivity(), new TextToSpeech.OnInitListener() {

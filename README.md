@@ -80,8 +80,11 @@ City
 | createdAt  | Date | Date of creation |
 | ACL | ACL | ACL? |
 | location  | String  | Name of the city |
-| parks  | Array  | Pointers to Park |
-
+| parks  | Array  | Park names |
+| tree | Array | Min Seg Tree with how many people are in each park |
+| latitude  | Array  | latitude for each park, default value 0 |
+| longitude | Array | longitudes for each park, default value 0 |
+| hours  | Array  | operational hours, defalut value "Hours not provided" |
 
 User 
 
@@ -97,21 +100,6 @@ User
 | Avatar | File | Profile image |
 | username  | String  | Nickname of the user |
 | password  | String  | User key to access account |
-
-
-Park 
-
-| Property        | Type          | Description |
-| ------------- | ------------- | ----------- |
-| objectId  | String  | The id of the object |
-| updatedAt  | Date | Date of last update |
-| createdAt | Date | Date of creation |
-| ACL  | ACL  | ACL? |
-| name  | String  | Park name |
-| longitude  | Number | Longitude if provided |
-| latitude  | Number | Latitude if provided |
-| hours  | String | Schedule if provided |
-| npeople | Number | Current number of Users in Park |
 
 
 ### Networking

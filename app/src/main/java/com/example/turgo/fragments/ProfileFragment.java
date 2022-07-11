@@ -39,6 +39,7 @@ public class ProfileFragment extends Fragment {
                 ParseUser.logOut();
                 Intent intent = new Intent(getContext(), LoginActivity.class);
                 startActivity(intent);
+                getActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             }
         });
     }

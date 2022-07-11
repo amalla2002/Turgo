@@ -15,7 +15,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
-
 import android.os.Handler;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
@@ -25,7 +24,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -54,7 +52,6 @@ import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -86,8 +83,6 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
     private float accelLast;
     private CharSequence summary;
     private static TextToSpeech TTS;
-
-    // seattle api endpoint https://data.seattle.gov/resource/j9km-ydkc.json
 
     public PlacesFragment() { }
 
@@ -169,15 +164,10 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
                     public void onInit(int status) {
                         if (status == TextToSpeech.SUCCESS) {
                             int result = TTS.setLanguage(Locale.US);
-//                            TTS.setPitch(0.1f);
-//                            TTS.setSpeechRate(1.0f);
                             TTS.speak(text, TextToSpeech.QUEUE_FLUSH, null);
                         }
                     }
                 });
-//
-
-//                TTS.speak(summary, TextToSpeech.QUEUE_FLUSH, null, "42");
                 Toast.makeText(getContext(), "Shake event detected", Toast.LENGTH_SHORT).show();
             }
         }
@@ -201,12 +191,12 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
                 SensorManager.SENSOR_DELAY_NORMAL);
         super.onResume();
     }
+
     @Override
     public void onPause() {
         sensorManager.unregisterListener(mSensorListener);
         super.onPause();
     }
-
 
     private void normalizeView() {
         map.clear();

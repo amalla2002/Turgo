@@ -5,8 +5,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,9 +16,7 @@ import com.example.turgo.ParseApplication;
 import com.example.turgo.R;
 import com.example.turgo.adapter.ParkAdapter;
 import com.example.turgo.models.City;
-
 import org.javatuples.Quintet;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;

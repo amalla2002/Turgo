@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.StrictMode;
 import android.view.MenuItem;
 import com.android.volley.Request;

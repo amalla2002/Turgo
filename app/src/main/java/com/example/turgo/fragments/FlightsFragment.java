@@ -10,14 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-
-import com.example.turgo.AmadeusApplication;
 import com.example.turgo.R;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.gson.JsonArray;
 import org.javatuples.Pair;
-
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -28,7 +25,6 @@ import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
 public class FlightsFragment extends Fragment {
-
     private static final String TAG  = "FlightsFragment";
     private List<LocalDate> goOn, leaveOn;
     private String hotelName;
@@ -69,7 +65,6 @@ public class FlightsFragment extends Fragment {
                 editingGoOn = true; displayCallendar();
             }
         });
-
         btnLeaveOn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -91,7 +86,6 @@ public class FlightsFragment extends Fragment {
         for (LocalDate thisDate : goOn) {
 //            flight = AmadeusApplication.fetchPlane(origin, dest, thisDate.toString());
             int i = getIndex(thisDate);
-            Log.i(TAG, String.valueOf(i));
             goingItenerary[i] = flight.getValue0();
             goingPrice[i] =  flight.getValue1().doubleValue();
         }

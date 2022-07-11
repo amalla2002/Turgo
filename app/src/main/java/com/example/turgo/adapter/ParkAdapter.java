@@ -12,7 +12,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.turgo.R;
 import com.example.turgo.fragments.VisitParkFragment;
-
 import java.util.List;
 import org.javatuples.Quintet;
 

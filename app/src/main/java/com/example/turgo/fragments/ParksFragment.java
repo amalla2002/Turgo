@@ -6,8 +6,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +15,7 @@ import com.example.turgo.MainActivity;
 import com.example.turgo.R;
 import com.example.turgo.adapter.ParkAdapter;
 import com.example.turgo.models.City;
-
 import org.javatuples.Quintet;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -54,7 +50,6 @@ public class ParksFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         System.loadLibrary("native-lib");
-
         myCity = MainActivity.getCity();
         prepareVariables(myCity);
         rvParks.setAdapter(adapter);

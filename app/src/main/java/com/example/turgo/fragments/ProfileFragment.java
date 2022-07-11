@@ -9,13 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-
 import com.example.turgo.LoginActivity;
 import com.example.turgo.R;
 import com.parse.ParseUser;
 
 public class ProfileFragment extends Fragment {
-
     private static final String TAG = "ProfileFragment";
     private Button btnLogout;
 

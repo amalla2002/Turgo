@@ -1,19 +1,15 @@
 package com.example.turgo.models;
 
-
 import com.parse.ParseClassName;
 import com.parse.ParseObject;
-
 import java.util.List;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
 @ParseClassName("City")
 public class City extends ParseObject {
-
     public static final String KEY_LOCATION = "location";
     public static final String KEY_PARKS = "parks";
-    public static final String KEY_PEOPLE = "people";
     public static final String KEY_TREE = "tree";
     public static final String KEY_HOURS = "hours";
     public static final String KEY_LAT = "latitude";
@@ -47,7 +43,6 @@ public class City extends ParseObject {
     public void setParks(List<String> parks) {
         put(KEY_PARKS, parks);
     }
-
     public void setTree(int[] tree) {
         put(KEY_TREE, Arrays.stream(tree).boxed().collect(Collectors.toList()));
     }

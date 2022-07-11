@@ -1,14 +1,11 @@
 package com.example.turgo;
 
 import android.app.Application;
-
 import com.example.turgo.models.City;
 import com.parse.Parse;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 import com.parse.ParsePush;
-
-import java.time.Instant;
 
 public class ParseApplication extends Application {
 

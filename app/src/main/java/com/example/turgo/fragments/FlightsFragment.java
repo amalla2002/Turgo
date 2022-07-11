@@ -18,6 +18,8 @@ import org.javatuples.Pair;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.TimeZone;
@@ -35,7 +37,8 @@ public class FlightsFragment extends Fragment {
     private Button btnGoOn, btnLeaveOn, btnFind;
     private Pair<JsonArray, Number> flight;
     private JsonArray[] goingItenerary, returningItenerary;
-    private double[] goingPrice = new double[384*2], returningPrice = new double[384*2]; // 32 days per month (null days will have 0 cost
+    private List<Integer> goOnIndices = new ArrayList<>(), leaveOnIndices = new ArrayList<>();
+    private double[] goingPrice = new double[384*2], returningPrice = new double[384*2], hotelPrice = new double[384*2]; // 32 days per month (null days will have 0 cost
     private MaterialDatePicker.Builder materialDateBuilder = MaterialDatePicker.Builder.dateRangePicker();
 
     public FlightsFragment() {}
@@ -78,6 +81,8 @@ public class FlightsFragment extends Fragment {
                 Log.i(TAG, "\n"+hotelName+"\n"+goOn+"\n"+leaveOn);
                 getFields();
                 fillFlightCostsAndIteneraryArray();
+                int[] thiz = goOnIndices.stream().mapToInt(Integer::intValue).toArray(), that = leaveOnIndices.stream().mapToInt(Integer::intValue).toArray();
+                findBestCombination(goingPrice, returningPrice, hotelPrice, thiz, that);
             }
         });
     }
@@ -86,12 +91,14 @@ public class FlightsFragment extends Fragment {
         for (LocalDate thisDate : goOn) {
 //            flight = AmadeusApplication.fetchPlane(origin, dest, thisDate.toString());
             int i = getIndex(thisDate);
+            goOnIndices.add(i);
             goingItenerary[i] = flight.getValue0();
             goingPrice[i] =  flight.getValue1().doubleValue();
         }
         for (LocalDate thisDate : leaveOn) {
 //            flight = AmadeusApplication.fetchPlane(origin, dest, thisDate.toString());
             int i = getIndex(thisDate);
+            leaveOnIndices.add(i);
             returningItenerary[i] = flight.getValue0();
             returningPrice[i] =  flight.getValue1().doubleValue();
         }
@@ -148,4 +155,6 @@ public class FlightsFragment extends Fragment {
             }
         });
     }
+
+    private native int[] findBestCombination(double[] goingPriceFlights, double[] returningPriceFlights, double[] hotelPrice, int[] goingIndices, int[] returningIndices);// the two days on which to book
 }

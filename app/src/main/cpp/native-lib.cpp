@@ -74,3 +74,33 @@ Java_com_example_turgo_fragments_PlacesFragment_updateTree(JNIEnv *env, jobject 
     env->SetIntArrayRegion(tree, jsize{0}, size, &T[0]);
     return tree;
 }
+
+extern "C"
+JNIEXPORT jintArray JNICALL
+Java_com_example_turgo_fragments_FlightsFragment_findBestCombination(JNIEnv *env, jobject thiz,
+                                                                     jdoubleArray going_price_flights,
+                                                                     jdoubleArray returning_price_flights,
+                                                                     jdoubleArray hotel_price,
+                                                                     jintArray going_indices,
+                                                                     jintArray returning_indices) {
+    // TODO: implement findBestCombination()
+    // assign
+    jsize size = env->GetArrayLength( going_price_flights ), size1 = env->GetArrayLength( going_indices), size2 = env->GetArrayLength( returning_indices);
+    vector<int> dates(2), starts(size1), ends(size2); // going and returning.
+    vector<double> ori(size), dest(size), stay(size), p(size+4, 0);
+    env->SetDoubleArrayRegion(going_price_flights, jsize{0}, size, &ori[0]);
+    env->SetDoubleArrayRegion(returning_price_flights, jsize{0}, size, &dest[0]);
+    env->SetDoubleArrayRegion(hotel_price, jsize{0}, size, &stay[0]);
+    env->SetIntArrayRegion(going_indices, jsize{0}, size1, &starts[0]);
+    env->SetIntArrayRegion(returning_indices, jsize{0}, size2, &ends[0]);
+
+    // build prefix sum
+    for (int i = 1; i<384*2+2; ++i) p[i] = p[i-1]+stay[i-1];
+
+
+
+    jintArray ans = env->NewIntArray(dates.size());
+    env->SetIntArrayRegion(ans, jsize{0}, env->GetArrayLength(ans), &dates[0]);
+    return ans;
+
+}

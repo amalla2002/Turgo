@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.StrictMode;
 import android.view.MenuItem;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -49,8 +50,10 @@ public class MainActivity extends AppCompatActivity {
         System.loadLibrary("native-lib");
         String google_api = getString(R.string.google_api_key_mine);
         Places.initialize(getApplicationContext(), google_api);
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
         bottomNavigationView = findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setSelectedItemId(R.id.action_profile);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -58,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+        bottomNavigationView.setSelectedItemId(R.id.action_profile);
         prepareInfoForToday();
     }
 

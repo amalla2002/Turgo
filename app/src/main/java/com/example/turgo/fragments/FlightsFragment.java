@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+
 import com.example.turgo.AmadeusApplication;
 import com.example.turgo.R;
 import com.example.turgo.adapter.HotelAdapter;
@@ -34,13 +36,15 @@ public class FlightsFragment extends Fragment {
     private List<LocalDate> goOn, leaveOn;
     private String origin, dest, currencyForHotel;
     private Boolean editingGoOn = false;
-    private EditText etOrigin, etDestination;
+    private EditText etOrigin, etDestination, etMinDays, etMaxDays;
     private Button btnGoOn, btnLeaveOn, btnFind, btnHotel;
+    private TextView tvBestCombination;
     private Pair<JsonArray, Number> flight;
     private JsonArray[] goingItenerary = new JsonArray[366*2], returningItenerary = new JsonArray[366*2];
     private List<Integer> goOnIndices = new ArrayList<>(), leaveOnIndices = new ArrayList<>();
     private double[] goingPrice = new double[366*2], returningPrice = new double[366*2], hotelPrice = new double[366*2];
     private MaterialDatePicker.Builder materialDateBuilder = MaterialDatePicker.Builder.dateRangePicker();
+    int minDays, maxDays;
 
     public FlightsFragment() {}
 
@@ -79,7 +83,6 @@ public class FlightsFragment extends Fragment {
         btnFind.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 getFields();
 //                fillFlightCostsAndIteneraryArray();
 //                findHotelCost();
@@ -90,12 +93,15 @@ public class FlightsFragment extends Fragment {
                             String.valueOf(returningPrice[i]) + " " +
                             String.valueOf(hotelPrice[i]));
                 }
-
                 int[] thiz = {goOnIndices.get(0), goOnIndices.get(goOnIndices.size()-1)}, that = {leaveOnIndices.get(0), leaveOnIndices.get(leaveOnIndices.size()-1)};
                 Log.i(TAG, Arrays.stream(thiz).boxed().collect(Collectors.toList()).toString());
                 Log.i(TAG, Arrays.stream(that).boxed().collect(Collectors.toList()).toString());
-                double[] ans = findBestCombination(goingPrice, returningPrice, hotelPrice, thiz, that);
+                double[] ans = findBestCombination(goingPrice, returningPrice, hotelPrice, thiz, that, minDays, maxDays);
                 Log.i(TAG, Arrays.stream(ans).boxed().collect(Collectors.toList()).toString());
+                tvBestCombination.setText("FOR " + String.valueOf(ans[0])+" YOU CAN GO TO " + dest +
+                        " ON " + LocalDate.ofYearDay(LocalDate.now().getYear(), (int) ans[1])+" AND RETURN ON "
+                        + LocalDate.ofYearDay(LocalDate.now().getYear(), (int) ans[2]) + "WHILE STAYING ON " + HotelAdapter.clickedHotelName);
+
             }
         });
         btnHotel.setOnClickListener(new View.OnClickListener() {
@@ -121,7 +127,7 @@ public class FlightsFragment extends Fragment {
                 returningPrice[203] = 200;
                 leaveOnIndices.add(202);
                 leaveOnIndices.add(203);
-                for (int i = 0; i<hotelPrice.length-1; ++i) hotelPrice[i] = 0.1;
+                for (int i = 0; i<hotelPrice.length-1; ++i) hotelPrice[i] = 150.0;
                 break; //
             case 2:
                 goingPrice[195] = 200;
@@ -135,8 +141,6 @@ public class FlightsFragment extends Fragment {
                 leaveOnIndices.add(203);
                 for (int i = 0; i<hotelPrice.length-1; ++i) hotelPrice[i] = 150.0;
         }
-
-
     }
 
     private void findHotelCost() {
@@ -170,15 +174,20 @@ public class FlightsFragment extends Fragment {
     private void getFields() {
         origin = etOrigin.getText().toString();
         dest = etDestination.getText().toString();
+        minDays = Integer.valueOf(etMinDays.getText().toString());
+        maxDays = Integer.valueOf(etMaxDays.getText().toString());
     }
 
     private void findViews(View view) {
         btnHotel = view.findViewById(R.id.btnHotel);
         etOrigin = view.findViewById(R.id.etOrigin);
         etDestination = view.findViewById(R.id.etDestination);
+        etMaxDays = view.findViewById(R.id.etMaxDays);
+        etMinDays = view.findViewById(R.id.etMinDays);
         btnGoOn = view.findViewById(R.id.btnGoOn);
         btnLeaveOn = view.findViewById(R.id.btnLeaveOn);
         btnFind = view.findViewById(R.id.btnFind);
+        tvBestCombination = view.findViewById(R.id.tvBestCombination);
     }
 
     private void displayCallendar() {
@@ -210,5 +219,5 @@ public class FlightsFragment extends Fragment {
         });
     }
 
-    private native double[] findBestCombination(double[] goingPriceFlights, double[] returningPriceFlights, double[] hotelPrice, int[] goingIndices, int[] returningIndices);// the two days on which to book
+    private native double[] findBestCombination(double[] goingPriceFlights, double[] returningPriceFlights, double[] hotelPrice, int[] goingIndices, int[] returningIndices, int minDays, int maxDays);// the two days on which to book
 }

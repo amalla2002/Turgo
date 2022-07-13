@@ -78,15 +78,12 @@ Java_com_example_turgo_fragments_PlacesFragment_updateTree(JNIEnv *env, jobject 
 extern "C"
 JNIEXPORT jdoubleArray JNICALL
 Java_com_example_turgo_fragments_FlightsFragment_findBestCombination(JNIEnv *env, jobject thiz,
-                                                                     jdoubleArray going_price_flights,
-                                                                     jdoubleArray returning_price_flights,
-                                                                     jdoubleArray hotel_price,
-                                                                     jintArray going_indices,
-                                                                     jintArray returning_indices) {
-    // TODO: implement findBestCombination()
-    // assign
+                                                                     jdoubleArray going_price_flights, jdoubleArray returning_price_flights, jdoubleArray hotel_price,
+                                                                     jintArray going_indices, jintArray returning_indices,
+                                                                     jint min_days, jint max_days) {
     jsize size = env->GetArrayLength( going_price_flights );
     jsize size1 = env->GetArrayLength( going_indices );
+    int minDays = min_days, maxDays = max_days;
     vector<int>  starts(2), ends(2); // going and returning.
     vector<double> ori(size), dest(size), stay(size), dp(size+4), answer(3, 1e9+7);
     env->GetDoubleArrayRegion(going_price_flights, jsize{0}, size, &ori[0]);
@@ -94,18 +91,19 @@ Java_com_example_turgo_fragments_FlightsFragment_findBestCombination(JNIEnv *env
     env->GetDoubleArrayRegion(hotel_price, jsize{0}, size, &stay[0]);
     env->GetIntArrayRegion(going_indices, jsize{0}, size1, &starts[0]);
     env->GetIntArrayRegion(returning_indices, jsize{0}, size1, &ends[0]);
-    // testing something
     dp[starts[0]-1] = 0;
     for (int i = starts[0]; i<=ends[1]; ++i) dp[i] = dp[i-1] + stay[i-1];
     for (int i = starts[0]; i<=starts[1]; ++i) {
         for (int j = ends[0]; j<=ends[1]; ++j) {
             if (i>=j) continue;
-            double goingPlane, returningPlane, hotelStay, sum;
-            goingPlane = ori[i];
-            returningPlane = dest[j];
-            hotelStay = dp[j]-dp[i];
-            sum = goingPlane+returningPlane+hotelStay; // Assuming hotel is in USD
+            if (!(j-(i+1)>=minDays && j-(i+1)<=maxDays)) continue;
+            double sum = ori[i]+dest[j]+(dp[j]-dp[i]); // Assuming hotel is in USD
             if (sum<answer[0]) {
+                answer[0] = sum;
+                answer[1] = i;
+                answer[2] = j;
+            }
+            else if (sum==answer[0] && (answer[2]-answer[1]<j-i)) { //if you can get more days for same price, take
                 answer[0] = sum;
                 answer[1] = i;
                 answer[2] = j;
@@ -114,7 +112,5 @@ Java_com_example_turgo_fragments_FlightsFragment_findBestCombination(JNIEnv *env
     }
     jdoubleArray ans = env->NewDoubleArray(answer.size());
     env->SetDoubleArrayRegion(ans, jsize{0}, env->GetArrayLength(ans), &answer[0]);
-
     return ans;
-
 }

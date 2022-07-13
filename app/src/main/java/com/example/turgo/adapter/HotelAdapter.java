@@ -20,7 +20,8 @@ public class HotelAdapter extends RecyclerView.Adapter<HotelAdapter.ViewHolder> 
     private static final String TAG = "HotelAdapter";
     private Context context;
     private List<Pair<String, String>> hotels;
-    public static String clickedHotel;
+    public static String clickedHotel; // id
+    public static String clickedHotelName;
 
     public HotelAdapter(Context context, List<Pair<String, String>> hotels) {
         this.context = context;
@@ -56,6 +57,7 @@ public class HotelAdapter extends RecyclerView.Adapter<HotelAdapter.ViewHolder> 
                 @Override
                 public void onClick(View v) {
                     clickedHotel = hotel.getValue1(); // HOTEL ID for amadeus
+                    clickedHotelName = hotel.getValue0();
                     FragmentManager fragmentManager = ((AppCompatActivity) context).getSupportFragmentManager();
                     fragmentManager.beginTransaction().replace(R.id.flContainer, new FlightsFragment()).commit();
                 }

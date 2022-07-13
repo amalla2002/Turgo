@@ -76,7 +76,7 @@ Java_com_example_turgo_fragments_PlacesFragment_updateTree(JNIEnv *env, jobject 
 }
 
 extern "C"
-JNIEXPORT jintArray JNICALL
+JNIEXPORT jdoubleArray JNICALL
 Java_com_example_turgo_fragments_FlightsFragment_findBestCombination(JNIEnv *env, jobject thiz,
                                                                      jdoubleArray going_price_flights,
                                                                      jdoubleArray returning_price_flights,
@@ -85,22 +85,36 @@ Java_com_example_turgo_fragments_FlightsFragment_findBestCombination(JNIEnv *env
                                                                      jintArray returning_indices) {
     // TODO: implement findBestCombination()
     // assign
-    jsize size = env->GetArrayLength( going_price_flights ), size1 = env->GetArrayLength( going_indices), size2 = env->GetArrayLength( returning_indices);
-    vector<int> dates(2), starts(size1), ends(size2); // going and returning.
-    vector<double> ori(size), dest(size), stay(size), p(size+4, 0);
-    env->SetDoubleArrayRegion(going_price_flights, jsize{0}, size, &ori[0]);
-    env->SetDoubleArrayRegion(returning_price_flights, jsize{0}, size, &dest[0]);
-    env->SetDoubleArrayRegion(hotel_price, jsize{0}, size, &stay[0]);
-    env->SetIntArrayRegion(going_indices, jsize{0}, size1, &starts[0]);
-    env->SetIntArrayRegion(returning_indices, jsize{0}, size2, &ends[0]);
+    jsize size = env->GetArrayLength( going_price_flights );
+    jsize size1 = env->GetArrayLength( going_indices );
+    vector<int>  starts(2), ends(2); // going and returning.
+    vector<double> ori(size), dest(size), stay(size), dp(size+4), answer(3, 1e9+7);
+    env->GetDoubleArrayRegion(going_price_flights, jsize{0}, size, &ori[0]);
+    env->GetDoubleArrayRegion(returning_price_flights, jsize{0}, size, &dest[0]);
+    env->GetDoubleArrayRegion(hotel_price, jsize{0}, size, &stay[0]);
+    env->GetIntArrayRegion(going_indices, jsize{0}, size1, &starts[0]);
+    env->GetIntArrayRegion(returning_indices, jsize{0}, size1, &ends[0]);
+    // testing something
+    dp[starts[0]-1] = 0;
+    for (int i = starts[0]; i<=ends[1]; ++i) dp[i] = dp[i-1] + stay[i-1];
+    for (int i = starts[0]; i<=starts[1]; ++i) {
+        for (int j = ends[0]; j<=ends[1]; ++j) {
+            if (i>=j) continue;
+            double goingPlane, returningPlane, hotelStay, sum;
+            goingPlane = ori[i];
+            returningPlane = dest[j];
+            hotelStay = dp[j]-dp[i];
+            sum = goingPlane+returningPlane+hotelStay; // Assuming hotel is in USD
+            if (sum<answer[0]) {
+                answer[0] = sum;
+                answer[1] = i;
+                answer[2] = j;
+            }
+        }
+    }
+    jdoubleArray ans = env->NewDoubleArray(answer.size());
+    env->SetDoubleArrayRegion(ans, jsize{0}, env->GetArrayLength(ans), &answer[0]);
 
-    // build prefix sum
-    for (int i = 1; i<384*2+2; ++i) p[i] = p[i-1]+stay[i-1];
-
-
-
-    jintArray ans = env->NewIntArray(dates.size());
-    env->SetIntArrayRegion(ans, jsize{0}, env->GetArrayLength(ans), &dates[0]);
     return ans;
 
 }

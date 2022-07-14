@@ -32,6 +32,15 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Prepares Fragment switcher (bottom navigation view)
+ *
+ * Fetches Park data if it has not been fetched that day
+ * Also builds the segment tree if it has to fetch new data
+ *
+ * Initializes variables so that when Places Fragment is selected
+ * it shows the correct view, instead of the park version
+ */
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MainActivity";
     public static Boolean visitingPark = false;

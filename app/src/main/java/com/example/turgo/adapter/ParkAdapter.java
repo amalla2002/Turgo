@@ -15,6 +15,12 @@ import com.example.turgo.fragments.VisitParkFragment;
 import java.util.List;
 import org.javatuples.Quintet;
 
+/**
+ * Prepares to show each individual park
+ * Upon clicking the Go button next to a park
+ * it saves the clicked park as a static variable
+ * in a Quintet and takes you to the Visit Park Fragment
+ */
 public class ParkAdapter extends RecyclerView.Adapter<ParkAdapter.ViewHolder> {
     public final String TAG = "ParkAdapter";
     private Context context;

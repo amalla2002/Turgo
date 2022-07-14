@@ -15,7 +15,10 @@ import com.example.turgo.adapter.HotelAdapter;
 import org.javatuples.Pair;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * Gets hotels from AmadeusApplication
+ * Displays them using a recycler view and HotelAdapter
+ */
 public class HotelSelectFragment extends Fragment {
     private static final String TAG = "HotelSelectFragment";
     private RecyclerView rvHotels;

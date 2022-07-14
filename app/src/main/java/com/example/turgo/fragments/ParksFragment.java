@@ -21,6 +21,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Displays List of parks in a recycler view
+ * parks displayed are gathered through queueing
+ * the segment tree, only the parks that have less (or equal) people
+ * to the number displayed on the seekbar are retrieved
+ */
 public class ParksFragment extends Fragment {
     private static final String TAG = "ParksFragment";
     private TextView tvPeopleAmount;

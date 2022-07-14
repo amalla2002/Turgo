@@ -28,6 +28,15 @@ import java.util.TimeZone;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
+/**
+ * Allows you to select range of dates for
+ * arrival, departure and days of stay.
+ * Airports for origin must be written destination
+ * Select Hotel button opens a list of hotels in another fragment
+ *
+ * When Find button is pressed, information is collected
+ * and findBestCombination cpp function is launched
+ */
 public class FlightsFragment extends Fragment {
     private static final String TAG  = "FlightsFragment";
     private List<LocalDate> goOn, leaveOn;

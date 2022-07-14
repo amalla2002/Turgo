@@ -13,6 +13,9 @@ import com.example.turgo.LoginActivity;
 import com.example.turgo.R;
 import com.parse.ParseUser;
 
+/**
+ * Allows the user to Logout
+ */
 public class ProfileFragment extends Fragment {
     private static final String TAG = "ProfileFragment";
     private Button btnLogout;

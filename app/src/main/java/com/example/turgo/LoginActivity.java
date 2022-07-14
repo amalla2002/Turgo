@@ -11,6 +11,12 @@ import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 
+/**
+ * Takes in fields for a login attempt
+ * On successful login attempt, goes to MainActivity
+ *
+ * Can redirect to RegisterActivity on button press
+ */
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
     private Button btnLogin;

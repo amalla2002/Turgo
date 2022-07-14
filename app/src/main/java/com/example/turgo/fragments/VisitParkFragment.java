@@ -21,6 +21,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Takes in how many people are going to the park
+ * updates tree and takes you to PlacesFragment
+ * to display the route
+ */
 public class VisitParkFragment extends Fragment {
     private static final String TAG = "VisitParkFragment";
     public static Number lat, lng;

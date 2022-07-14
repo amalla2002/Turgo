@@ -17,6 +17,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.LongStream;
 
+/**
+ * Makes a call to get the best flight offer for a given date
+ * Between to given locations
+ *
+ * Retrieves list of hotel, saving both the name and Id
+ * With the Id the price is later fetched for a range of dates
+ */
 public class AmadeusApplication extends Application {
     public static final String TAG = "AmadeusApplication";
     private static String key;

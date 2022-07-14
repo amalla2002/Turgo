@@ -61,6 +61,19 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
+/**
+ * Autocomplete search from google api to get a places
+ * geographical location
+ *
+ * Map and direction api to draw a route from current location
+ * to selected place on autocomplete search
+ *
+ * Shake listener to read text on shake
+ *
+ * Map is reused when coming from VisitParkFragment
+ * GetDirection button hides and Leave Park Button is shown
+ * segment tree is updated upon leaving park
+ */
 public class PlacesFragment extends Fragment implements OnMapReadyCallback {
     public static final String TAG = "PlacesFragment";
     private static int AUTOCOMPLETE_REQUEST_CODE = 1;

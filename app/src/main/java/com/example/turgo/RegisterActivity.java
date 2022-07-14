@@ -11,6 +11,10 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
+/**
+ * Takes in fields, creates a user with the information
+ * on those fields, goes to MainActivity
+ */
 public class RegisterActivity extends AppCompatActivity {
     private static final String TAG = "RegisterActivity";
     private EditText etUsername;

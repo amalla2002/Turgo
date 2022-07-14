@@ -14,6 +14,12 @@ import com.example.turgo.fragments.FlightsFragment;
 import org.javatuples.Pair;
 import java.util.List;
 
+/**
+ * Prepares how each individual hotel is going
+ * to be displayed in HotelSelectFragment
+ *
+ * Returns hotel Id for amadeus and hotel name for clicked hotel
+ */
 public class HotelAdapter extends RecyclerView.Adapter<HotelAdapter.ViewHolder> {
     private static final String TAG = "HotelAdapter";
     private Context context;

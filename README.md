@@ -12,7 +12,11 @@ Original App Design Project - README Template
 
 ## Overview
 ### Description
-You can look up a place, go (with directions) and here a description of the place. You can see a list of parks and how many registered users are in the park. A filter will be in place in case you do not want to go to a place with too many people.
+You can look up a place, go (with directions) and here a description of the place. 
+You can see a list of parks and how many registered users are in the park. 
+A filter is in place in case you do not want to go to a place with too many people. 
+You can find the cheapest combination for a trip.
+Select the range of days on which you are willing to go and return, the amount of days you want to spend and the hotel on which you want to stay. 
 
 ### App Evaluation
 [Evaluation of your app across the following attributes]
@@ -20,7 +24,7 @@ You can look up a place, go (with directions) and here a description of the plac
 - **Mobile:** Map services / Audio
 - **Story:** 
 - **Market:** 
-- **Habit:** Push notification from inactivity
+- **Habit:** 
 - **Scope:**
 
 ## Product Spec

@@ -11,10 +11,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.turgo.R;
 import com.example.turgo.fragments.FlightsFragment;
-import com.example.turgo.fragments.VisitParkFragment;
 import org.javatuples.Pair;
 import java.util.List;
-
 
 public class HotelAdapter extends RecyclerView.Adapter<HotelAdapter.ViewHolder> {
     private static final String TAG = "HotelAdapter";
@@ -62,15 +60,6 @@ public class HotelAdapter extends RecyclerView.Adapter<HotelAdapter.ViewHolder> 
                     fragmentManager.beginTransaction().replace(R.id.flContainer, new FlightsFragment()).commit();
                 }
             });
-        }
-        public void clear() {
-            hotels.clear();
-            notifyDataSetChanged();
-        }
-
-        public void addAll(List<Pair<String, String>> list) {
-            hotels.addAll(list);
-            notifyDataSetChanged();
         }
     }
 }

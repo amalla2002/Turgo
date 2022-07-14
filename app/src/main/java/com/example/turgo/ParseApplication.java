@@ -23,7 +23,6 @@ public class ParseApplication extends Application {
         installation.put("GCMSenderId", "794775232312");
         installation.saveInBackground();
         ParsePush.subscribeInBackground("User");
-
     }
 
     public static void parkVeryPopulated(String parkName, Number amount) {

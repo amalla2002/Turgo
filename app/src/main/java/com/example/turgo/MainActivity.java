@@ -25,9 +25,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.parse.ParseException;
 import com.parse.ParseQuery;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -66,9 +68,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void prepareInfoForToday()  {
         myCity = getCity();
-        int nowDate = Calendar.getInstance().getTime().getDate();
-        int lastCalc = myCity.getUpdatedAt().getDate();
-        if (nowDate != nowDate) {
+        Date lastUpdatedDate = myCity.getUpdatedAt();
+        int nowDate = LocalDate.now().getDayOfYear();
+        int lastCalc = Integer.parseInt(new SimpleDateFormat("DDD").format(lastUpdatedDate));
+        if (nowDate != lastCalc) {
             RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
             StringRequest stringRequest = new StringRequest(Request.Method.GET, PARKS_URL,
                     new Response.Listener<String>() {

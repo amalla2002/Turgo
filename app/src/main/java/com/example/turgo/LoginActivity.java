@@ -22,11 +22,12 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        btnLogin = findViewById(R.id.btnLogin);
-        btnMakeAccount = findViewById(R.id.btnMakeAccount);
-        etUsername = findViewById(R.id.etUsername);
-        etPassword = findViewById(R.id.etPassword);
+        findViews();
+        setBtnLogic();
         if (ParseUser.getCurrentUser()!=null) goMainActivity();
+    }
+
+    private void setBtnLogic() {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -51,6 +52,13 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(i);
             }
         });
+    }
+
+    private void findViews() {
+        btnLogin = findViewById(R.id.btnLogin);
+        btnMakeAccount = findViewById(R.id.btnMakeAccount);
+        etUsername = findViewById(R.id.etUsername);
+        etPassword = findViewById(R.id.etPassword);
     }
 
     private void goMainActivity() {

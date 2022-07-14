@@ -66,15 +66,5 @@ public class ParkAdapter extends RecyclerView.Adapter<ParkAdapter.ViewHolder> {
                 }
             });
         }
-
-        public void clear() {
-            parks.clear();
-            notifyDataSetChanged();
-        }
-
-        public void addAll(List<Quintet<String, String, Number, Number, Number>> list) {
-            parks.addAll(list);
-            notifyDataSetChanged();
-        }
     }
 }

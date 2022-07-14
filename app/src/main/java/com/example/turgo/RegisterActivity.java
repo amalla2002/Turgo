@@ -21,9 +21,7 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        etUsername = findViewById(R.id.etUsernameRegister);
-        etPassword = findViewById(R.id.etPasswordRegister);
-        btnRegister = findViewById(R.id.btnRegister);
+        findViews();
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -44,5 +42,11 @@ public class RegisterActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    private void findViews() {
+        etUsername = findViewById(R.id.etUsernameRegister);
+        etPassword = findViewById(R.id.etPasswordRegister);
+        btnRegister = findViewById(R.id.btnRegister);
     }
 }

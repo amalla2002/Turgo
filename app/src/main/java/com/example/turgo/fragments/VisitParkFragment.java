@@ -45,11 +45,7 @@ public class VisitParkFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         System.loadLibrary("native-lib");
-        btnParkVisitState = view.findViewById(R.id.btnParkVisitState);
-        etNumOfPeople = view.findViewById(R.id.etNumOfPeople);
-        myCity = MainActivity.getCity();
-        park = ParkAdapter.clickedPark;
-
+        setInfo(view);
         btnParkVisitState.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,6 +55,13 @@ public class VisitParkFragment extends Fragment {
                 showRoute();
             }
         });
+    }
+
+    private void setInfo(View view) {
+        btnParkVisitState = view.findViewById(R.id.btnParkVisitState);
+        etNumOfPeople = view.findViewById(R.id.etNumOfPeople);
+        myCity = MainActivity.getCity();
+        park = ParkAdapter.clickedPark;
     }
 
     private int prepareInfo() {

@@ -54,7 +54,7 @@ public class ParksFragment extends Fragment {
         prepareVariables(myCity);
         rvParks.setAdapter(adapter);
         rvParks.setLayoutManager(new LinearLayoutManager(getContext()));
-        tvPeopleAmount.setText("0 People");
+        tvPeopleAmount.setText("-1 People");
         sbPeopleAmount.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {

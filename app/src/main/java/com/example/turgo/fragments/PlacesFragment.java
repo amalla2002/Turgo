@@ -9,7 +9,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -72,8 +71,6 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
     private Polyline currentPolyline;
     private List<LatLng> directionList;
     private LatLng origin, destination;
-    private boolean showMap = false;
-    private LocationManager locationManager;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private Button btnLeavePark;
     private City myCity;
@@ -100,28 +97,15 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         System.loadLibrary("native-lib");
-        etSearch = view.findViewById(R.id.etSearch);
-        btnGetDirections = view.findViewById(R.id.btnGetDirections);
-        btnLeavePark = view.findViewById(R.id.btnLeavePark);
-        btnLeavePark.setVisibility(View.INVISIBLE);
+        findViews(view);
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.mapFragment);
         mapFragment.getMapAsync(this::onMapReady);
-        sensorManager = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
-        Objects.requireNonNull(sensorManager).registerListener(mSensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-                SensorManager.SENSOR_DELAY_NORMAL);
-        accel = 10f;
-        accelCurrent = SensorManager.GRAVITY_EARTH;
-        accelLast = SensorManager.GRAVITY_EARTH;
+        shakeListenerSetup();
+        defaultLocatins();
+        setBtnLogic();
+    }
 
-        if (place1 == null) {
-            origin = new LatLng(47.629229, -122.341229);
-            place1 = new MarkerOptions().position(origin).title("Default origin");
-        }
-        if (place2 == null) {
-            destination = new LatLng(47.615698, -122.332956);
-            place2 = new MarkerOptions().position(destination).title("Default destination");
-        }
-
+    private void setBtnLogic() {
         btnGetDirections.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -137,7 +121,6 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
                 startActivityForResult(intent, 100);
             }
         });
-        
         btnLeavePark.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -146,6 +129,34 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
             }
         });
     }
+
+    private void defaultLocatins() {
+        if (place1 == null) {
+            origin = new LatLng(47.629229, -122.341229);
+            place1 = new MarkerOptions().position(origin).title("Default origin");
+        }
+        if (place2 == null) {
+            destination = new LatLng(47.615698, -122.332956);
+            place2 = new MarkerOptions().position(destination).title("Default destination");
+        }
+    }
+
+    private void findViews(View view) {
+        etSearch = view.findViewById(R.id.etSearch);
+        btnGetDirections = view.findViewById(R.id.btnGetDirections);
+        btnLeavePark = view.findViewById(R.id.btnLeavePark);
+        btnLeavePark.setVisibility(View.INVISIBLE);
+    }
+
+    private void shakeListenerSetup() {
+        sensorManager = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
+        Objects.requireNonNull(sensorManager).registerListener(mSensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+                SensorManager.SENSOR_DELAY_NORMAL);
+        accel = 10f;
+        accelCurrent = SensorManager.GRAVITY_EARTH;
+        accelLast = SensorManager.GRAVITY_EARTH;
+    }
+
     private final SensorEventListener mSensorListener = new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent event) {
@@ -285,14 +296,7 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
 
     public void putLine() {
         map.clear();
-        if (place1 == null) {
-            origin = new LatLng(47.629229, -122.341229);
-            place1 = new MarkerOptions().position(origin).title("Default origin");
-        }
-        if (place2 == null) {
-            destination = new LatLng(47.615698, -122.332956);
-            place2 = new MarkerOptions().position(destination).title("Default destination");
-        }
+        defaultLocatins();
         map.addMarker(place1);
         map.addMarker(place2);
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
@@ -327,8 +331,7 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
                         place1 = new MarkerOptions().position(origin).title("origin");
                     } else {
                         Log.i(TAG, "NULL LOCATION");
-                        origin = new LatLng(47.629229, -122.341229);
-                        place1 = new MarkerOptions().position(origin).title("Default origin");
+                        defaultLocatins();
                     }
                 }
             });

@@ -5,14 +5,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
 import com.example.turgo.AmadeusApplication;
 import com.example.turgo.R;
 import com.example.turgo.adapter.HotelAdapter;
@@ -24,7 +22,6 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.TimeZone;
@@ -87,21 +84,11 @@ public class FlightsFragment extends Fragment {
 //                fillFlightCostsAndIteneraryArray();
 //                findHotelCost();
                 generateTestData(1);
-                for (int i = 194; i<205; ++i) {
-                    Log.i(TAG, " " +
-                            String.valueOf(goingPrice[i]) + " " +
-                            String.valueOf(returningPrice[i]) + " " +
-                            String.valueOf(hotelPrice[i]));
-                }
                 int[] thiz = {goOnIndices.get(0), goOnIndices.get(goOnIndices.size()-1)}, that = {leaveOnIndices.get(0), leaveOnIndices.get(leaveOnIndices.size()-1)};
-                Log.i(TAG, Arrays.stream(thiz).boxed().collect(Collectors.toList()).toString());
-                Log.i(TAG, Arrays.stream(that).boxed().collect(Collectors.toList()).toString());
                 double[] ans = findBestCombination(goingPrice, returningPrice, hotelPrice, thiz, that, minDays, maxDays);
-                Log.i(TAG, Arrays.stream(ans).boxed().collect(Collectors.toList()).toString());
                 tvBestCombination.setText("FOR " + String.valueOf(ans[0])+" YOU CAN GO TO " + dest +
                         " ON " + LocalDate.ofYearDay(LocalDate.now().getYear(), (int) ans[1])+" AND RETURN ON "
                         + LocalDate.ofYearDay(LocalDate.now().getYear(), (int) ans[2]) + "WHILE STAYING ON " + HotelAdapter.clickedHotelName);
-
             }
         });
         btnHotel.setOnClickListener(new View.OnClickListener() {
@@ -114,32 +101,39 @@ public class FlightsFragment extends Fragment {
     }
 
     private void generateTestData(int testing) {
-        // TODO: FILL goingPrice, returningPrice, hotelPrice, thiz, that
-        //            |           doubles 366*2             |
         switch (testing) {
-            case 1: // ans is both extremes, longest flight, 408.9
+            case 1:
                 goingPrice[195] = 200;
                 goingPrice[196] = 300;
                 goOnIndices.add(195);
                 goOnIndices.add(196);
-
                 returningPrice[202] = 300;
                 returningPrice[203] = 200;
                 leaveOnIndices.add(202);
                 leaveOnIndices.add(203);
                 for (int i = 0; i<hotelPrice.length-1; ++i) hotelPrice[i] = 150.0;
-                break; //
+                break;
             case 2:
                 goingPrice[195] = 200;
                 goingPrice[196] = 300;
                 goOnIndices.add(195);
                 goOnIndices.add(196);
-
                 returningPrice[202] = 300;
                 returningPrice[203] = 200;
                 leaveOnIndices.add(202);
                 leaveOnIndices.add(203);
-                for (int i = 0; i<hotelPrice.length-1; ++i) hotelPrice[i] = 150.0;
+                for (int i = 0; i<hotelPrice.length-1; ++i) hotelPrice[i] = 100.0;
+                break;
+            case 3:
+                goingPrice[195] = 200;
+                goingPrice[196] = 300;
+                goOnIndices.add(195);
+                goOnIndices.add(196);
+                returningPrice[202] = 300;
+                returningPrice[203] = 200;
+                leaveOnIndices.add(202);
+                leaveOnIndices.add(203);
+                for (int i = 0; i<hotelPrice.length-1; ++i) hotelPrice[i] = 1.0;
         }
     }
 

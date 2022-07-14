@@ -31,6 +31,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.turgo.MainActivity;
 import com.example.turgo.R;
+import com.example.turgo.ScrapperApplication;
 import com.example.turgo.models.City;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -76,6 +77,7 @@ import java.util.Objects;
  */
 public class PlacesFragment extends Fragment implements OnMapReadyCallback {
     public static final String TAG = "PlacesFragment";
+    public static boolean newSummary = false;
     private static int AUTOCOMPLETE_REQUEST_CODE = 1;
     private EditText etSearch;
     private Button btnGetDirections;
@@ -91,7 +93,7 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
     private float accel;
     private float accelCurrent;
     private float accelLast;
-    private CharSequence summary;
+    public static String summary;
     private static TextToSpeech TTS;
 
     public PlacesFragment() { }
@@ -114,7 +116,7 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
         SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.mapFragment);
         mapFragment.getMapAsync(this::onMapReady);
         shakeListenerSetup();
-        defaultLocatins();
+        defaultLocations();
         setBtnLogic();
     }
 
@@ -123,6 +125,10 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onClick(View v) {
                 getDirection();
+                String placeForLink = etSearch.getText().toString().replace(' ', '_');
+                ScrapperApplication thread = new ScrapperApplication(placeForLink);
+                thread.start();
+                Toast.makeText(getContext(), "Shake for surprise", Toast.LENGTH_SHORT).show();
             }
         });
         etSearch.setFocusable(false);
@@ -143,7 +149,7 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
         });
     }
 
-    private void defaultLocatins() {
+    private void defaultLocations() {
         if (place1 == null) {
             origin = new LatLng(47.629229, -122.341229);
             place1 = new MarkerOptions().position(origin).title("Default origin");
@@ -182,17 +188,18 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
             accel = accel * 0.9f + delta;
             if (accel > 12) {
                 // TODO: read summary if user has selected a place
-                String text = "Testing the text to speech functionality";
+                if (!newSummary) return;
                 TTS = new TextToSpeech(getActivity(), new TextToSpeech.OnInitListener() {
                     @Override
                     public void onInit(int status) {
                         if (status == TextToSpeech.SUCCESS) {
                             int result = TTS.setLanguage(Locale.US);
-                            TTS.speak(text, TextToSpeech.QUEUE_FLUSH, null);
+                            TTS.speak(summary, TextToSpeech.QUEUE_FLUSH, null);
+                            newSummary = false;
                         }
                     }
                 });
-                Toast.makeText(getContext(), "Shake event detected", Toast.LENGTH_SHORT).show();
+
             }
         }
         @Override
@@ -309,7 +316,7 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
 
     public void putLine() {
         map.clear();
-        defaultLocatins();
+        defaultLocations();
         map.addMarker(place1);
         map.addMarker(place2);
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
@@ -344,7 +351,7 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
                         place1 = new MarkerOptions().position(origin).title("origin");
                     } else {
                         Log.i(TAG, "NULL LOCATION");
-                        defaultLocatins();
+                        defaultLocations();
                     }
                 }
             });

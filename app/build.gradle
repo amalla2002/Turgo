@@ -75,6 +75,7 @@ dependencies {
 
     implementation "com.amadeus:amadeus-java:6.1.0"
 
+    implementation 'org.jsoup:jsoup:1.15.2'
 
 
 }

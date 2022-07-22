@@ -16,6 +16,7 @@ import com.parse.ParsePush;
  * is called from visitParkFragment
  */
 public class ParseApplication extends Application {
+    public static final String allUsers = "users";
 
     @Override
     public void onCreate() {
@@ -30,7 +31,7 @@ public class ParseApplication extends Application {
         ParseInstallation installation = ParseInstallation.getCurrentInstallation();
         installation.put("GCMSenderId", "794775232312");
         installation.saveInBackground();
-        ParsePush.subscribeInBackground("User");
+        ParsePush.subscribeInBackground(allUsers);
     }
 
     /**
@@ -41,7 +42,7 @@ public class ParseApplication extends Application {
     public static void parkVeryPopulated(String parkName, Number amount) {
         ParsePush push = new ParsePush();
         push.setMessage(parkName + " currently has " + amount.toString());
-        push.setChannel("User");
+        push.setChannel(allUsers);
         push.sendInBackground();
     }
 }

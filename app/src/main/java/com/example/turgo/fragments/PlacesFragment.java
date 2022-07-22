@@ -79,7 +79,7 @@ import java.util.Objects;
 public class PlacesFragment extends Fragment implements OnMapReadyCallback {
     public static final String TAG = "PlacesFragment";
     public static boolean newSummary = false;
-    private static int AUTOCOMPLETE_REQUEST_CODE = 1;
+    private static final int AUTOCOMPLETE_REQUEST_CODE = 1;
     private EditText etSearch;
     private Button btnGetDirections;
     private GoogleMap map;

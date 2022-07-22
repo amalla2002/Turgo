@@ -14,6 +14,7 @@ Java_com_example_turgo_fragments_ParksFragment_queueTree(JNIEnv *env, jobject th
     // moving things into normal cpp types
     jsize size = env->GetArrayLength( tree );
     vector<int> minimumSegmentedTree( size ), Ans;
+    const int segmentationFaultPrecaution = 24;
     env->GetIntArrayRegion( tree, jsize{0}, size, &minimumSegmentedTree[0] );
 
     // normal BFS
@@ -23,8 +24,8 @@ Java_com_example_turgo_fragments_ParksFragment_queueTree(JNIEnv *env, jobject th
     while (!q.empty()) {
         int v = q.front(); q.pop();
         if (minimumSegmentedTree[v]>noMoreThanThisAmountOfPeople) continue;
-        if (v>=(minimumSegmentedTree.size()-24)/2) { // is in last row of tree (data)
-            Ans.push_back(v-(minimumSegmentedTree.size()-24)/2);
+        if (v>=(minimumSegmentedTree.size()-segmentationFaultPrecaution)/2) { // is in last row of tree (data)
+            Ans.push_back(v-(minimumSegmentedTree.size()-segmentationFaultPrecaution)/2);
             continue;
         }
         q.push(v*2); q.push(v*2+1); // adds the current nodes' childs
@@ -43,13 +44,14 @@ Java_com_example_turgo_MainActivity_buildTree(JNIEnv *env, jobject thiz, jintArr
     // move things to normal cpp types
     jsize size = env->GetArrayLength( people );
     vector<int> data(size);
+    const int segmentationFaultPrecaution = 24;
     env->GetIntArrayRegion( people, jsize{0}, size, &data[0] ); // fills A with people
 
     // looks for a power of 2 for the size of tree
     int pow2 = 1; for (int i = 1; pow2<data.size(); ++i) pow2*=2;
 
     // build tree
-    vector<int> minimumSegmentedTree(pow2*2+24, INF);
+    vector<int> minimumSegmentedTree(pow2*2+segmentationFaultPrecaution, INF);
     for (int i = 0, k = pow2; i<data.size(); ++i, ++k) minimumSegmentedTree[k] = 0;
     for (int i = pow2-1; i>0; --i) minimumSegmentedTree[i] = min(minimumSegmentedTree[i*2], minimumSegmentedTree[i*2+1]);
 
@@ -66,10 +68,11 @@ Java_com_example_turgo_fragments_VisitParkFragment_updateTree(JNIEnv *env, jobje
     // move things to normal cpp types
     jsize size = env->GetArrayLength( tree );
     vector<int> minimumSegmentedTree(size);
+    const int segmentationFaultPrecaution = 24;
     env->GetIntArrayRegion(tree, jsize{0}, size, &minimumSegmentedTree[0]);
 
     // get position of data in tree
-    pos += (minimumSegmentedTree.size()-24)/2;
+    pos += (minimumSegmentedTree.size()-segmentationFaultPrecaution)/2;
     minimumSegmentedTree[pos] += val; // not using T[pos] = val in case there are multiple updates at the same time
 
     // start at the parent and go to the root recalculating min
@@ -88,8 +91,10 @@ Java_com_example_turgo_fragments_PlacesFragment_updateTree(JNIEnv *env, jobject 
     // see above function
     jsize size = env->GetArrayLength( tree );
     vector<int> minimumSegmentedTree(size);
+    const int segmentationFaultPrecaution = 24;
+
     env->GetIntArrayRegion(tree, jsize{0}, size, &minimumSegmentedTree[0]);
-    pos += (minimumSegmentedTree.size()-24)/2;
+    pos += (minimumSegmentedTree.size()-segmentationFaultPrecaution)/2;
     minimumSegmentedTree[pos] += val; // not using T[pos] = val in case there are multiple updates at the same time
     pos /= 2;
     for (; pos>0; pos/=2) minimumSegmentedTree[pos] = min(minimumSegmentedTree[2*pos], minimumSegmentedTree[2*pos+1]);

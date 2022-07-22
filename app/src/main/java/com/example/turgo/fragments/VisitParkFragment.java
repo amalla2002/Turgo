@@ -100,7 +100,7 @@ public class VisitParkFragment extends Fragment {
         List<Integer> listTree = Arrays.stream(updatedTree).boxed().collect(Collectors.toList());
         myCity.setTree(updatedTree);
         myCity.saveInBackground();
-        return listTree.get((listTree.size()-24)/2 + pos);
+        return listTree.get((listTree.size()-MainActivity.segmentationFaultPrecaution)/2 + pos);
     }
 
     /**

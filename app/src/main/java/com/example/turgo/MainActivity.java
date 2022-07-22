@@ -44,6 +44,7 @@ import java.util.List;
  */
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MainActivity";
+    public static final int segmentationFaultPrecaution = 24;
     public static Boolean visitingPark = false;
     public static Number visitingWith = 0;
     public static Number visitingPos = -1;

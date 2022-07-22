@@ -67,6 +67,9 @@ public class LoginActivity extends AppCompatActivity {
         etPassword = findViewById(R.id.etPassword);
     }
 
+    /**
+     * Transitions with fade to Main activity
+     */
     private void goMainActivity() {
         Intent i = new Intent(this, MainActivity.class);
         startActivity(i);

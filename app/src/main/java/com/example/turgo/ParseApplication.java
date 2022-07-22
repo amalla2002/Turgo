@@ -33,6 +33,11 @@ public class ParseApplication extends Application {
         ParsePush.subscribeInBackground("User");
     }
 
+    /**
+     *
+     * @param parkName name of park to be displayed
+     * @param amount number of people in that park
+     */
     public static void parkVeryPopulated(String parkName, Number amount) {
         ParsePush push = new ParsePush();
         push.setMessage(parkName + " currently has " + amount.toString());

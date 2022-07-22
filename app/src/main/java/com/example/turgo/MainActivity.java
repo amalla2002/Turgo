@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.util.Log;
 import android.view.MenuItem;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -75,6 +76,10 @@ public class MainActivity extends AppCompatActivity {
         prepareInfoForToday();
     }
 
+    /**
+     * Check to see if city information has been prepared today
+     * if it hasn't fetches it
+     */
     private void prepareInfoForToday()  {
         myCity = getCity();
         Date lastUpdatedDate = myCity.getUpdatedAt();
@@ -97,16 +102,27 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Static method to get City info
+     *
+     * @return current City, right now SEA
+     */
+
     public static City getCity()  {
         try {
             ParseQuery<City> query = ParseQuery.getQuery(City.class);
             City city = query.find().get(0);
             return city;
         } catch (Exception e) {
+            Log.e(TAG, e.toString());
             return new City();
         }
     }
 
+    /**
+     *
+     * @param itemId Id of bottom navigation item clicked
+     */
     private void switchFragments(int itemId) {
         Fragment fragment;
         switch (itemId) {
@@ -127,6 +143,9 @@ public class MainActivity extends AppCompatActivity {
         fragmentManager.beginTransaction().replace(R.id.flContainer, fragment).commit();
     }
 
+    /**
+     * Fills out all fields in myCity
+     */
     private void readyMyCity() {
         myCity.setParks(parkNames);
         myCity.setHours(hours);
@@ -137,6 +156,13 @@ public class MainActivity extends AppCompatActivity {
         try { myCity.save();  } catch (ParseException e) {}
     }
 
+    /**
+     * Parses response given by the seattle gov api
+     * Then collects it into arrays, to be saved in readyMyCity
+     * Finally launches build tree
+     *
+     * @param response data given by the seattle gov api
+     */
     private void saveParks(String response) {
         JsonArray jsonParks = new JsonParser().parse(response).getAsJsonArray();
         parkNames = new ArrayList<>(); hours = new ArrayList<>(); latitudes = new ArrayList<>(); longitudes = new ArrayList<>();

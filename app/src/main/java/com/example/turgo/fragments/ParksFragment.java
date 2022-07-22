@@ -61,6 +61,10 @@ public class ParksFragment extends Fragment {
         rvParks.setAdapter(adapter);
         rvParks.setLayoutManager(new LinearLayoutManager(getContext()));
         tvPeopleAmount.setText("-1 People");
+
+        /**
+         * sets seekbar logic
+         */
         sbPeopleAmount.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -75,6 +79,11 @@ public class ParksFragment extends Fragment {
         });
     }
 
+    /**
+     * Takes in info to display in recycler view and assigns views.
+     *
+     * @param city current city
+     */
     private void prepareVariables(City city) {
         myCity = city;
         segTree = myCity.getTree();
@@ -93,6 +102,9 @@ public class ParksFragment extends Fragment {
         adapter = new ParkAdapter(getContext(), parksInView);
     }
 
+    /**
+     * Queues the tree for parks under current target
+     */
     private void getNewParkList() {
         parksInView.clear();
         adapter.notifyDataSetChanged();
@@ -102,6 +114,11 @@ public class ParksFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
+    /**
+     * shows the amount of people for target
+     *
+     * @param progress number of 1-100 represents percentage of bar filled
+     */
     private void updateCount(double progress) {
         progress /= 100;
         progress *= MAXPEOPLE;

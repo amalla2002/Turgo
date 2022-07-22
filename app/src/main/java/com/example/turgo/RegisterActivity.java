@@ -26,6 +26,14 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         findViews();
+        setBtnLogic();
+    }
+
+    /**
+     * Takes information from fills and signs up the user
+     * Takes you to main activity
+     */
+    private void setBtnLogic() {
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -41,6 +49,7 @@ public class RegisterActivity extends AppCompatActivity {
                         }
                         Intent i = new Intent(RegisterActivity.this, MainActivity.class);
                         startActivity(i);
+                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                         finish();
                     }
                 });
@@ -48,6 +57,10 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Assigns the views of the activity to
+     * its corresponding element
+     */
     private void findViews() {
         etUsername = findViewById(R.id.etUsernameRegister);
         etPassword = findViewById(R.id.etPasswordRegister);

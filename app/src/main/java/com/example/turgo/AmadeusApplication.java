@@ -34,6 +34,15 @@ public class AmadeusApplication extends Application {
         super.onCreate();
     }
 
+
+    /**
+     * Fetches plane price data for a given dates and parses it
+     *
+     * @param origin place from where you are departing
+     * @param dest place from where you are arriving
+     * @param date date for flight
+     * @return returns itenerary and price
+     */
     public static Pair<JsonArray, Number> fetchPlane(String origin, String dest, String date) {
         key = "";
         secret = "";
@@ -60,6 +69,13 @@ public class AmadeusApplication extends Application {
         return Pair.with(planes, price);
     }
 
+    /**
+     * Sends Amadeus an api request to the /v1/reference-data/locations/hotels/by-city endpoint
+     * Parses out the names and Ids
+     *
+     * @param destination place where the hotels are being looked up
+     * @return returns list of hotel names with their ID (amadeus)
+     */
     public static List<Pair<String, String>> fetchHotels(String destination) {
         key = "";
         secret = "";
@@ -82,6 +98,16 @@ public class AmadeusApplication extends Application {
         }
         return hotels;
     }
+
+    /**
+     * Sends Amadeus an api request to the /v3/shopping/hotel-offers endpoint
+     * parses it and returns the price for staying one night for a range of dates
+     *
+     * @param hotelId Id of hotel, gotten with method fetchHotel
+     * @param start earliest arrival date
+     * @param end latest departure date - 1
+     * @return array of prices and currency type
+     */
     public static Pair<double[], String> fetchHotelPrices(String hotelId, LocalDate start, LocalDate end) {
         key = "";
         secret = "";

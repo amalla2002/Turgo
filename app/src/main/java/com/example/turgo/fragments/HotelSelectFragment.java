@@ -46,7 +46,7 @@ public class HotelSelectFragment extends Fragment {
         adapter = new HotelAdapter(getContext(), allHotels);
         rvHotels.setAdapter(adapter);
         rvHotels.setLayoutManager(new LinearLayoutManager(getContext()));
-        allHotels.addAll(AmadeusApplication.fetchHotels("PAR"));
+        allHotels.addAll(AmadeusApplication.fetchHotels("JFK"));
         adapter.notifyDataSetChanged();
     }
 }

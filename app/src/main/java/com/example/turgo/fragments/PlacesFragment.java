@@ -122,6 +122,10 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void setBtnLogic() {
+
+        /**
+         * Gets directions and laucnhes scrapper to retrieve shake on listen data
+         */
         btnGetDirections.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -132,6 +136,10 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
                 Toast.makeText(getContext(), "Shake for surprise", Toast.LENGTH_SHORT).show();
             }
         });
+
+        /**
+         * creates autocomplete search fragment as an activity
+         */
         etSearch.setFocusable(false);
         etSearch.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,6 +149,10 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
                 startActivityForResult(intent, 100);
             }
         });
+
+        /**
+         * Normalizes view
+         */
         btnLeavePark.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -150,6 +162,9 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
         });
     }
 
+    /**
+     * Work around location issues with the emulator
+     */
     private void defaultLocations() {
         if (place1 == null) {
             origin = new LatLng(47.629229, -122.341229);
@@ -161,6 +176,11 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
+    /**
+     * assigns views
+     *
+     * @param view view from where to find objects
+     */
     private void findViews(View view) {
         etSearch = view.findViewById(R.id.etSearch);
         btnGetDirections = view.findViewById(R.id.btnGetDirections);
@@ -168,6 +188,9 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
         btnLeavePark.setVisibility(View.INVISIBLE);
     }
 
+    /**
+     * initializes tools for the shake listener
+     */
     private void shakeListenerSetup() {
         sensorManager = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
         Objects.requireNonNull(sensorManager).registerListener(mSensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
@@ -177,6 +200,10 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
         accelLast = SensorManager.GRAVITY_EARTH;
     }
 
+    /**
+     * Senses shake via acceleration, if shaked enough and newSummary is true
+     * reads summary and sets newSummary to false
+     */
     private final SensorEventListener mSensorListener = new SensorEventListener() {
         @Override
         public void onSensorChanged(SensorEvent event) {
@@ -188,7 +215,6 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
             float delta = accelCurrent - accelLast;
             accel = accel * 0.9f + delta;
             if (accel > 12) {
-                // TODO: read summary if user has selected a place
                 if (!newSummary) return;
                 TTS = new TextToSpeech(getActivity(), new TextToSpeech.OnInitListener() {
                     @Override
@@ -208,6 +234,9 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
         }
     };
 
+    /**
+     * handles destruction of text to speech
+     */
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -217,6 +246,9 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
+    /**
+     * reasigns the listener
+     */
     @Override
     public void onResume() {
         sensorManager.registerListener(mSensorListener, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
@@ -224,18 +256,28 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
         super.onResume();
     }
 
+    /**
+     * stops listener
+     */
     @Override
     public void onPause() {
         sensorManager.unregisterListener(mSensorListener);
         super.onPause();
     }
 
+    /**
+     * Launched when coming from VisitParkFragment, makes it so that
+     * PlacesFragment looks like the normal PlacesFragment
+     */
     private void normalizeView() {
         map.clear();
         btnLeavePark.setVisibility(View.INVISIBLE);
         btnGetDirections.setVisibility(View.VISIBLE);
     }
 
+    /**
+     * Updates tree to reflect the people leaving the park
+     */
     private void removePeople() {
         int val = (int) MainActivity.visitingWith;
         int pos = (int) MainActivity.visitingPos;
@@ -246,6 +288,9 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
         myCity.saveInBackground();
     }
 
+    /**
+     * sets the device's location and gets route to put polyline in
+     */
     private void getDirection() {
         setMyLocation();
         String DIRECTION_URL = getUrl(place1.getPosition(), place2.getPosition(), "steps");
@@ -259,6 +304,12 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
         }, 3000);
     }
 
+    /**
+     * launches request for google's direction endpoint
+     * saves the polyline
+     *
+     * @param DIRECTION_URL takes in the URL for the api request
+     */
     private void getRoute(String DIRECTION_URL) {
         RequestQueue queue = Volley.newRequestQueue(getActivity());
         StringRequest stringRequest = new StringRequest(Request.Method.GET, DIRECTION_URL,
@@ -282,6 +333,13 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
         queue.add(stringRequest);
     }
 
+    /**
+     * Takes in information about place clicked in autocomplete search fragment
+     *
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -291,12 +349,17 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
             place2 = new MarkerOptions().position(destination).title("Destination");
             etSearch.setText(place.getName());
         } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
-            // TODO: Handle the error.
             Status status = Autocomplete.getStatusFromIntent(data);
             Log.i(TAG, status.getStatusMessage());
         }
     }
 
+    /**
+     * Prepares map empty map, if coming from VisitingParkFragment
+     * then it puts the polyline in from the beginning
+     *
+     * @param googleMap empty map
+     */
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         map = googleMap;
@@ -315,6 +378,9 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
+    /**
+     * Adds markers, line and moves map view to include both markers
+     */
     public void putLine() {
         map.clear();
         defaultLocations();
@@ -330,9 +396,17 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
         Polyline polyline1 = map.addPolyline( new PolylineOptions().addAll(directionList));
     }
 
+    /**
+     * Formats url for directions endpoint
+     *
+     * @param origin device's lat lng
+     * @param dest park or autocomplete latlng
+     * @param directionMode walkiking default
+     * @return
+     */
     private String getUrl(LatLng origin, LatLng dest, String directionMode) {
         String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
-        String str_dest = "destination=" + dest.latitude + "," + dest.longitude; // TODO: CHECK if works
+        String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
         String mode = "mode=" + directionMode;
         String parameters = str_origin + "&" + str_dest + "&" + mode;
         String output = "json";
@@ -340,6 +414,9 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
         return url;
     }
 
+    /**
+     * sets location of the device
+     */
     private void setMyLocation() {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {

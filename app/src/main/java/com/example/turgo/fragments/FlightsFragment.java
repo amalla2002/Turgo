@@ -72,20 +72,32 @@ public class FlightsFragment extends Fragment {
     }
 
     private void setBtnLogic() {
+
+        /**
+         * opens calendar and saves date range to go on
+         */
         btnGoOn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 materialDateBuilder.setTitleText("SELECT ARRIVAL DATES");
-                editingGoOn = true; displayCallendar();
+                editingGoOn = true; displayCalendar();
             }
         });
+
+        /**
+         * opens calendar and saves date range to leave on
+         */
         btnLeaveOn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 materialDateBuilder.setTitleText("SELECT RETURNING DATES");
-                editingGoOn = false; displayCallendar();
+                editingGoOn = false; displayCalendar();
             }
         });
+
+        /**
+         * gets flight data, hotel data and launches best combination computation
+         */
         btnFind.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,6 +112,10 @@ public class FlightsFragment extends Fragment {
                         + LocalDate.ofYearDay(LocalDate.now().getYear(), (int) ans[2]) + "WHILE STAYING ON " + HotelAdapter.clickedHotelName);
             }
         });
+
+        /**
+         * shows recycler view of hotels in area
+         */
         btnHotel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -109,6 +125,11 @@ public class FlightsFragment extends Fragment {
         });
     }
 
+    /**
+     * work around to Amadeus errors
+     *
+     * @param testing different scenarios
+     */
     private void generateTestData(int testing) {
         switch (testing) {
             case 1:
@@ -146,12 +167,18 @@ public class FlightsFragment extends Fragment {
         }
     }
 
+    /**
+     * finds hotel cost for range of stay
+     */
     private void findHotelCost() {
         Pair<double[], String> data = AmadeusApplication.fetchHotelPrices(HotelAdapter.clickedHotel, goOn.get(0), leaveOn.get(leaveOn.size()-1));
         hotelPrice = data.getValue0();
         currencyForHotel = data.getValue1();
     }
 
+    /**
+     * finds flights cost for range of stay
+     */
     private void fillFlightCostsAndIteneraryArray() {
         for (LocalDate thisDate : goOn) {
             flight = AmadeusApplication.fetchPlane(origin, dest, thisDate.toString());
@@ -169,11 +196,21 @@ public class FlightsFragment extends Fragment {
         }
     }
 
+    /**
+     * Transform a date into an index. index is day of year, current year jan1 being 0,
+     * next year jan1 being 365 or 366 depending on year
+     *
+     * @param thisDate date to be converted
+     * @return index in array for thisDate
+     */
     private int getIndex(LocalDate thisDate) {
         int year = thisDate.getYear()-LocalDate.now().getYear();
         return thisDate.getDayOfYear()+Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_YEAR)*year;
     }
 
+    /**
+     * Collects info from fields
+     */
     private void getFields() {
         origin = etOrigin.getText().toString();
         dest = etDestination.getText().toString();
@@ -181,6 +218,11 @@ public class FlightsFragment extends Fragment {
         maxDays = Integer.valueOf(etMaxDays.getText().toString());
     }
 
+    /**
+     * Assigns views
+     *
+     * @param view view where objects reside
+     */
     private void findViews(View view) {
         btnHotel = view.findViewById(R.id.btnHotel);
         etOrigin = view.findViewById(R.id.etOrigin);
@@ -193,7 +235,11 @@ public class FlightsFragment extends Fragment {
         tvBestCombination = view.findViewById(R.id.tvBestCombination);
     }
 
-    private void displayCallendar() {
+    /**
+     * opens materia design date picker and when a date is selected it assigns
+     * the list of days to its corresponding category (going/leaving)
+     */
+    private void displayCalendar() {
         final MaterialDatePicker materialDatePicker = materialDateBuilder.build();
         materialDatePicker.show(getChildFragmentManager(), "MATERIAL_DATE_PICKER");
         materialDatePicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener<androidx.core.util.Pair<Long, Long>>() {

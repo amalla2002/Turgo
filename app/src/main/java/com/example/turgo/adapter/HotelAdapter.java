@@ -57,6 +57,10 @@ public class HotelAdapter extends RecyclerView.Adapter<HotelAdapter.ViewHolder> 
 
         public void bind(Pair<String, String> hotel) {
             tvHotelName.setText(hotel.getValue0());
+
+            /**
+             * Saves hotel along with Id, ID used for price lookup later
+             */
             tvHotelName.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

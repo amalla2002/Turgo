@@ -63,6 +63,11 @@ public class VisitParkFragment extends Fragment {
         });
     }
 
+    /**
+     * Assigns views, passes park and gets city
+     *
+     * @param view neccesary to find views
+     */
     private void setInfo(View view) {
         btnParkVisitState = view.findViewById(R.id.btnParkVisitState);
         etNumOfPeople = view.findViewById(R.id.etNumOfPeople);
@@ -70,6 +75,13 @@ public class VisitParkFragment extends Fragment {
         park = ParkAdapter.clickedPark;
     }
 
+    /**
+     * Gets info ready to conduct the update to the tree
+     * updates the tree and prepares info for PlaceFragment
+     *
+     * @return current number of people at the park that is being visited
+     *         used to check if a notificaiton should be sent
+     */
     private int prepareInfo() {
         int pos = myCity.getParks().indexOf(park.getValue0());
         int val;
@@ -91,6 +103,9 @@ public class VisitParkFragment extends Fragment {
         return listTree.get((listTree.size()-24)/2 + pos);
     }
 
+    /**
+     * switches to PlacesFragment
+     */
     private void showRoute() {
         FragmentManager fragmentManager = getParentFragmentManager();
         Fragment fragment = new PlacesFragment();

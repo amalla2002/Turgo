@@ -63,6 +63,10 @@ public class ParkAdapter extends RecyclerView.Adapter<ParkAdapter.ViewHolder> {
             tvParkName.setText(park.getValue0());
             tvPeopleOnPark.setText((park.getValue2()) + " People here");
             tvHours.setText(park.getValue1());
+
+            /**
+             * saves park for coordinates and tree updates
+             */
             btnGoToPark.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

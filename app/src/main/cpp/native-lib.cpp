@@ -1,12 +1,12 @@
-// TODO: NOTE THE +24 TO THE SIZE
-
 #include <string>
 #include <iostream>
 #include <vector>
 #include <algorithm>
 #include <queue>
 #include <jni.h>
+
 using namespace std;
+
 extern "C"
 JNIEXPORT jintArray JNICALL
 Java_com_example_turgo_fragments_ParksFragment_queueTree(JNIEnv *env, jobject thiz, jintArray tree,
@@ -35,6 +35,7 @@ Java_com_example_turgo_fragments_ParksFragment_queueTree(JNIEnv *env, jobject th
     env->SetIntArrayRegion(ans, jsize{0}, env->GetArrayLength(ans),&Ans[0]);
     return ans;
 }
+
 extern "C"
 JNIEXPORT jintArray JNICALL
 Java_com_example_turgo_MainActivity_buildTree(JNIEnv *env, jobject thiz, jintArray people) {
@@ -57,6 +58,7 @@ Java_com_example_turgo_MainActivity_buildTree(JNIEnv *env, jobject thiz, jintArr
     env->SetIntArrayRegion(ans, jsize{0}, env->GetArrayLength(ans),&segTree[0]);
     return ans;
 }
+
 extern "C"
 JNIEXPORT jintArray JNICALL
 Java_com_example_turgo_fragments_VisitParkFragment_updateTree(JNIEnv *env, jobject thiz,
@@ -78,6 +80,7 @@ Java_com_example_turgo_fragments_VisitParkFragment_updateTree(JNIEnv *env, jobje
     env->SetIntArrayRegion(tree, jsize{0}, size, &T[0]);
     return tree;
 }
+
 extern "C"
 JNIEXPORT jintArray JNICALL
 Java_com_example_turgo_fragments_PlacesFragment_updateTree(JNIEnv *env, jobject thiz,

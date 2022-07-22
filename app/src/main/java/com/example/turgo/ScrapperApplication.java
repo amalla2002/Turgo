@@ -15,16 +15,18 @@ import java.io.IOException;
  * from PlacesFragment
  */
 public class ScrapperApplication extends Thread {
-    String url = "https://en.wikipedia.org/wiki/";
+    private static final String urlBase = "https://en.wikipedia.org/wiki/";
+    String urlPath;
 
     public ScrapperApplication(String url) {
-        this.url += url;
+        this.urlPath += url;
     }
 
     @Override
     public void run() {
         super.run();
         try {
+            String url = urlBase+urlPath;
             final Document document = Jsoup.connect(url).get();
             Element body = document.getElementById("mw-content-text");
             String paragraphs = body.getElementsByTag("p").toString();

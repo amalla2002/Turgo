@@ -26,10 +26,13 @@ public class ScrapperApplication extends Thread {
     public void run() {
         super.run();
         try {
+            //get page and extract all paragraphs in main body
             String url = urlBase+urlPath;
             final Document document = Jsoup.connect(url).get();
             Element body = document.getElementById("mw-content-text");
             String paragraphs = body.getElementsByTag("p").toString();
+
+            // remove everything that is not part of the paragraph text (links, etc.)
             Boolean delete = false;
             for (int i = 0; i<paragraphs.length(); ++i) {
                 if (paragraphs.charAt(i)=='<') delete = true;
@@ -40,6 +43,8 @@ public class ScrapperApplication extends Thread {
                 if ( delete ) paragraphs = paragraphs.substring(0,i)+"~"+paragraphs.substring(i+1);
             }
             paragraphs = paragraphs.replace("~", "");
+
+            // send back to Places
             PlacesFragment.summary = paragraphs.substring(0, paragraphs.indexOf("."));
             PlacesFragment.newSummary = true;
         } catch (IOException e) {

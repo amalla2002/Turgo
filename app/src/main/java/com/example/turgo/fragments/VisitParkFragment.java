@@ -33,6 +33,7 @@ public class VisitParkFragment extends Fragment {
     private EditText etNumOfPeople;
     private Quintet<String, String, Number, Number, Number> park;
     private City myCity;
+    private static final Integer INF = (int) 1e9+7, notifyForThisAmountOfPeople = 500;
 
     public VisitParkFragment() {}
 
@@ -55,8 +56,8 @@ public class VisitParkFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Integer Npeople = prepareInfo();
-                if(Npeople == 1e9+7) return;
-                if (Npeople>500) ParseApplication.parkVeryPopulated(park.getValue0(), Npeople);
+                if(Npeople == INF) return;
+                if (Npeople>notifyForThisAmountOfPeople) ParseApplication.parkVeryPopulated(park.getValue0(), Npeople);
                 showRoute();
             }
         });
@@ -76,7 +77,7 @@ public class VisitParkFragment extends Fragment {
             val = Integer.parseInt(etNumOfPeople.getText().toString());
         } catch (Exception e) {
             Toast.makeText(getContext(), "Please indicate num of people", Toast.LENGTH_SHORT).show();
-            return (int) (1e9+7);
+            return INF;
         }
         MainActivity.visitingPark = true;
         MainActivity.visitingWith = val*-1;

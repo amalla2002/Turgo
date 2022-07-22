@@ -13,18 +13,18 @@ Java_com_example_turgo_fragments_ParksFragment_queueTree(JNIEnv *env, jobject th
                                                          jint target) {
     // moving things into normal cpp types
     jsize size = env->GetArrayLength( tree );
-    vector<int>T( size ), Ans;
-    env->GetIntArrayRegion( tree, jsize{0}, size, &T[0] );
+    vector<int> minimumSegmentedTree( size ), Ans;
+    env->GetIntArrayRegion( tree, jsize{0}, size, &minimumSegmentedTree[0] );
 
     // normal BFS
     queue<int> q;
-    int x = target;
+    int noMoreThanThisAmountOfPeople = target;
     q.push(1);
     while (!q.empty()) {
         int v = q.front(); q.pop();
-        if (T[v]>x) continue;
-        if (v>=(T.size()-24)/2) { // is in last row of tree (data)
-            Ans.push_back(v-(T.size()-24)/2);
+        if (minimumSegmentedTree[v]>noMoreThanThisAmountOfPeople) continue;
+        if (v>=(minimumSegmentedTree.size()-24)/2) { // is in last row of tree (data)
+            Ans.push_back(v-(minimumSegmentedTree.size()-24)/2);
             continue;
         }
         q.push(v*2); q.push(v*2+1); // adds the current nodes' childs
@@ -42,20 +42,20 @@ Java_com_example_turgo_MainActivity_buildTree(JNIEnv *env, jobject thiz, jintArr
     const int INF = 1e7;
     // move things to normal cpp types
     jsize size = env->GetArrayLength( people );
-    vector<int> A(size);
-    env->GetIntArrayRegion( people, jsize{0}, size, &A[0] ); // fills A with people
+    vector<int> data(size);
+    env->GetIntArrayRegion( people, jsize{0}, size, &data[0] ); // fills A with people
 
     // looks for a power of 2 for the size of tree
-    int pow2 = 1; for (int i = 1; pow2<A.size(); ++i) pow2*=2;
+    int pow2 = 1; for (int i = 1; pow2<data.size(); ++i) pow2*=2;
 
     // build tree
-    vector<int> segTree(pow2*2+24, INF);
-    for (int i = 0, k = pow2; i<A.size(); ++i, ++k) segTree[k] = 0;
-    for (int i = pow2-1; i>0; --i) segTree[i] = min(segTree[i*2], segTree[i*2+1]);
+    vector<int> minimumSegmentedTree(pow2*2+24, INF);
+    for (int i = 0, k = pow2; i<data.size(); ++i, ++k) minimumSegmentedTree[k] = 0;
+    for (int i = pow2-1; i>0; --i) minimumSegmentedTree[i] = min(minimumSegmentedTree[i*2], minimumSegmentedTree[i*2+1]);
 
     // moves answers back to java types
-    jintArray ans = env->NewIntArray(segTree.size());
-    env->SetIntArrayRegion(ans, jsize{0}, env->GetArrayLength(ans),&segTree[0]);
+    jintArray ans = env->NewIntArray(minimumSegmentedTree.size());
+    env->SetIntArrayRegion(ans, jsize{0}, env->GetArrayLength(ans),&minimumSegmentedTree[0]);
     return ans;
 }
 
@@ -65,19 +65,19 @@ Java_com_example_turgo_fragments_VisitParkFragment_updateTree(JNIEnv *env, jobje
                                                               jintArray tree, jint pos, jint val) {
     // move things to normal cpp types
     jsize size = env->GetArrayLength( tree );
-    vector<int> T(size);
-    env->GetIntArrayRegion(tree, jsize{0}, size, &T[0]);
+    vector<int> minimumSegmentedTree(size);
+    env->GetIntArrayRegion(tree, jsize{0}, size, &minimumSegmentedTree[0]);
 
     // get position of data in tree
-    pos += (T.size()-24)/2;
-    T[pos] += val; // not using T[pos] = val in case there are multiple updates at the same time
+    pos += (minimumSegmentedTree.size()-24)/2;
+    minimumSegmentedTree[pos] += val; // not using T[pos] = val in case there are multiple updates at the same time
 
     // start at the parent and go to the root recalculating min
     pos /= 2;
-    for (; pos>0; pos/=2) T[pos] = min(T[2*pos], T[2*pos+1]);
+    for (; pos>0; pos/=2) minimumSegmentedTree[pos] = min(minimumSegmentedTree[2*pos], minimumSegmentedTree[2*pos+1]);
 
     // move things back to java types
-    env->SetIntArrayRegion(tree, jsize{0}, size, &T[0]);
+    env->SetIntArrayRegion(tree, jsize{0}, size, &minimumSegmentedTree[0]);
     return tree;
 }
 
@@ -87,13 +87,13 @@ Java_com_example_turgo_fragments_PlacesFragment_updateTree(JNIEnv *env, jobject 
                                                               jintArray tree, jint pos, jint val) {
     // see above function
     jsize size = env->GetArrayLength( tree );
-    vector<int> T(size);
-    env->GetIntArrayRegion(tree, jsize{0}, size, &T[0]);
-    pos += (T.size()-24)/2;
-    T[pos] += val; // not using T[pos] = val in case there are multiple updates at the same time
+    vector<int> minimumSegmentedTree(size);
+    env->GetIntArrayRegion(tree, jsize{0}, size, &minimumSegmentedTree[0]);
+    pos += (minimumSegmentedTree.size()-24)/2;
+    minimumSegmentedTree[pos] += val; // not using T[pos] = val in case there are multiple updates at the same time
     pos /= 2;
-    for (; pos>0; pos/=2) T[pos] = min(T[2*pos], T[2*pos+1]);
-    env->SetIntArrayRegion(tree, jsize{0}, size, &T[0]);
+    for (; pos>0; pos/=2) minimumSegmentedTree[pos] = min(minimumSegmentedTree[2*pos], minimumSegmentedTree[2*pos+1]);
+    env->SetIntArrayRegion(tree, jsize{0}, size, &minimumSegmentedTree[0]);
     return tree;
 }
 
@@ -108,23 +108,23 @@ Java_com_example_turgo_fragments_FlightsFragment_findBestCombination(JNIEnv *env
     jsize size1 = env->GetArrayLength( going_indices );
     int minDays = min_days, maxDays = max_days;
     vector<int>  starts(2), ends(2); // going and returning.
-    vector<double> ori(size), dest(size), stay(size), dp(size+4), answer(3, 1e9+7);
-    env->GetDoubleArrayRegion(going_price_flights, jsize{0}, size, &ori[0]);
-    env->GetDoubleArrayRegion(returning_price_flights, jsize{0}, size, &dest[0]);
+    vector<double> origin(size), destination(size), stay(size), dynamicProgramming(size+4), answer(3, 1e9+7);
+    env->GetDoubleArrayRegion(going_price_flights, jsize{0}, size, &origin[0]);
+    env->GetDoubleArrayRegion(returning_price_flights, jsize{0}, size, &destination[0]);
     env->GetDoubleArrayRegion(hotel_price, jsize{0}, size, &stay[0]);
     env->GetIntArrayRegion(going_indices, jsize{0}, size1, &starts[0]);
     env->GetIntArrayRegion(returning_indices, jsize{0}, size1, &ends[0]);
 
     // get sums from 0 to ith for all i
-    dp[starts[0]-1] = 0;
-    for (int i = starts[0]; i<=ends[1]; ++i) dp[i] = dp[i-1] + stay[i-1];
+    dynamicProgramming[starts[0]-1] = 0;
+    for (int i = starts[0]; i<=ends[1]; ++i) dynamicProgramming[i] = dynamicProgramming[i-1] + stay[i-1];
 
     // check starts with ends and add costs
     for (int i = starts[0]; i<=starts[1]; ++i) {
         for (int j = ends[0]; j<=ends[1]; ++j) {
             if (i>=j) continue; // arrive before depart
             if (!(j-(i+1)>=minDays && j-(i+1)<=maxDays)) continue; // between day range
-            double sum = ori[i]+dest[j]+(dp[j]-dp[i]); // Assuming hotel price is in USD
+            double sum = origin[i]+destination[j]+(dynamicProgramming[j]-dynamicProgramming[i]); // Assuming hotel price is in USD
             if (sum<answer[0]) {
                 answer[0] = sum;
                 answer[1] = i;

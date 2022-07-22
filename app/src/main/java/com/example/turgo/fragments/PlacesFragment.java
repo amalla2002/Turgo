@@ -70,6 +70,7 @@ import java.util.Objects;
  * to selected place on autocomplete search
  *
  * Shake listener to read text on shake
+ * Starts a thread to fetch this text, happens on Get Directions
  *
  * Map is reused when coming from VisitParkFragment
  * GetDirection button hides and Leave Park Button is shown

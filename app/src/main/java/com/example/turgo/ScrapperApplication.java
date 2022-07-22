@@ -1,13 +1,19 @@
 package com.example.turgo;
 
-import android.widget.Toast;
-
 import com.example.turgo.fragments.PlacesFragment;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import java.io.IOException;
 
+/**
+ * Extends a thread as network request cannot be put in main thread
+ *
+ * Creates wikipedia link and gets the information
+ *
+ * Parses it so that only the first sentence is set to a static variable called
+ * from PlacesFragment
+ */
 public class ScrapperApplication extends Thread {
     String url = "https://en.wikipedia.org/wiki/";
 
@@ -28,7 +34,6 @@ public class ScrapperApplication extends Thread {
                 if (paragraphs.charAt(i)=='>')  {
                     delete = false;
                     paragraphs = paragraphs.substring(0,i)+"~"+paragraphs.substring(i+1);
-
                 }
                 if ( delete ) paragraphs = paragraphs.substring(0,i)+"~"+paragraphs.substring(i+1);
             }

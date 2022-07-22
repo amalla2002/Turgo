@@ -44,6 +44,10 @@ import java.util.List;
  */
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = "MainActivity";
+    /**
+     * this value is used in the minimum segmented tree
+     * it is used as precaution, a segmentation fault is not expected
+     */
     public static final int segmentationFaultPrecaution = 24;
     public static Boolean visitingPark = false;
     public static Number visitingWith = 0;

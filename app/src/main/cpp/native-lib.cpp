@@ -148,3 +148,77 @@ Java_com_example_turgo_fragments_FlightsFragment_findBestCombination(JNIEnv *env
     env->SetDoubleArrayRegion(ans, jsize{0}, env->GetArrayLength(ans), &answer[0]);
     return ans;
 }
+
+extern "C"
+JNIEXPORT jdoubleArray JNICALL
+Java_com_example_turgo_NotificationSettingActivity_computeWeightAndBias(JNIEnv *env, jobject thiz,
+                                                                        jintArray X_train_in,
+                                                                        jintArray y_train_in,
+                                                                        jdouble weight_in,
+                                                                        jdouble bias_in) {
+    jsize m_in = env->GetArrayLength(X_train_in);
+    int m = m_in; // number of training samples
+    // move things to normal cpp types and prepare data containers
+    vector<double> X_train(m), y_train(m);
+    env->GetDoubleArrayRegion(reinterpret_cast<jdoubleArray>(X_train_in), jsize{0}, m_in, &X_train[0]);
+    env->GetDoubleArrayRegion(reinterpret_cast<jdoubleArray>(y_train_in), jsize{0}, m_in, &y_train[0]);
+    double weight = weight_in, bias = bias_in, alpha = 0.003; // alpha is the learning rate and was tested
+
+    vector<double> J; // will store cost of each iteration
+
+    // iterations of gradient descent
+    for (int iteration = 0; iteration<10000; ++iteration) {
+
+        double total_cost = 0.0;
+        double dj_dw = 0.0, dj_db = 0.0; // derivative of function J with respect to weights and bias
+
+        for (int i = 0; i<m; ++i) {
+            // get prediction
+            double z_i;
+            z_i = X_train[i]*weight+bias;
+
+            // truncate with sigmoid function
+            double f_wb_i = 1/(1+ exp(-z_i));
+
+            // compute loss
+            double loss = -y_train[i]*log(f_wb_i) - (1-y_train[i])* log(1-f_wb_i);
+            total_cost += loss;
+
+            // compute gradient
+            dj_dw += (f_wb_i-y_train[i])*X_train[i];
+            dj_db += (f_wb_i-y_train[i]);
+        }
+        dj_dw /= m;
+        dj_db /= m;
+        total_cost /= m;
+
+        weight = weight - alpha*dj_dw;
+        bias   = bias   - alpha*dj_db;
+
+        J.push_back(total_cost);
+    }
+
+    vector<double> ans = {weight, bias};
+    jsize size = ans.size();
+    jdoubleArray weightAndBais = env->NewDoubleArray(size);
+    env->SetDoubleArrayRegion(weightAndBais, jsize{0}, size, &ans[0]);
+    return weightAndBais;
+}
+
+extern "C"
+JNIEXPORT jint JNICALL
+Java_com_example_turgo_NotificationSettingActivity_predictSetting(JNIEnv *env, jobject thiz,
+                                                                  jdouble weight,
+                                                                  jdouble bias,
+                                                                  jdouble age) {
+    double w = weight, b = bias, x = age, threshold = 0.5;
+
+    // get prediction
+    double z = x*w+b;
+
+    // apply sigmoid
+    double truncated_prediction = 1/(1+ exp(-z));
+
+    if (truncated_prediction>=threshold) return 1; // would like to have notifications on
+    else return 0; // would not like to receive notifications
+}

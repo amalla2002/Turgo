@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--suppress AndroidElementNotAllowed -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.turgo">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -30,10 +28,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Turgo"
-
         tools:targetApi="31">
-
-
+        <activity
+            android:name=".NotificationSettingActivity"
+            android:exported="false" />
         <activity
             android:name=".RegisterActivity"
             android:exported="false" />
@@ -56,13 +54,9 @@
             android:value="@string/google_api_key_mine" />
         <meta-data
             android:name="com.parse.push.gcm_sender_id"
-            android:value="794775232312"/>
-
-<!--        <meta-data-->
-<!--            android:name="com.google.android.gms.version"-->
-<!--            android:value="@integer/google_play_services_version" />-->
-
-
+            android:value="794775232312" /> <!-- <meta-data -->
+        <!-- android:name="com.google.android.gms.version" -->
+        <!-- android:value="@integer/google_play_services_version" /> -->
         <activity
             android:name=".LoginActivity"
             android:exported="true">
@@ -73,24 +67,23 @@
             </intent-filter>
         </activity>
 
-
-
         <service
-            android:name="com.parse.fcm.ParseFirebaseMessagingService" android:exported="false">
+            android:name="com.parse.fcm.ParseFirebaseMessagingService"
+            android:exported="false">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
 
-        <receiver android:name="com.parse.ParsePushBroadcastReceiver" android:exported="false">
+        <receiver
+            android:name="com.parse.ParsePushBroadcastReceiver"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.parse.push.intent.RECEIVE" />
                 <action android:name="com.parse.push.intent.OPEN" />
                 <action android:name="com.parse.push.intent.DELETE" />
             </intent-filter>
         </receiver>
-
-
     </application>
 
 </manifest>

@@ -5,6 +5,7 @@
       <map>
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.192481884057971" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.29393115942028986" />
+        <entry key="app/src/main/res/layout/activity_notification_setting.xml" value="0.1693840579710145" />
         <entry key="app/src/main/res/layout/activity_register.xml" value="0.192481884057971" />
         <entry key="app/src/main/res/layout/fragment_auto_complete.xml" value="0.1" />
         <entry key="app/src/main/res/layout/fragment_flight.xml" value="0.15450861195542046" />

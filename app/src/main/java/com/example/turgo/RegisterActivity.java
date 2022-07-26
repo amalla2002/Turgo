@@ -17,6 +17,7 @@ import com.parse.SignUpCallback;
  */
 public class RegisterActivity extends AppCompatActivity {
     private static final String TAG = "RegisterActivity";
+    public static double thisAge;
     private EditText etUsername;
     private EditText etPassword;
     private Button btnRegister;
@@ -47,7 +48,7 @@ public class RegisterActivity extends AppCompatActivity {
                             Log.e(TAG, e.toString());
                             return;
                         }
-                        Intent i = new Intent(RegisterActivity.this, MainActivity.class);
+                        Intent i = new Intent(RegisterActivity.this, NotificationSettingActivity.class);
                         startActivity(i);
                         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                         finish();

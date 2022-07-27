@@ -1,19 +1,31 @@
 package com.example.turgo;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-
+import com.example.turgo.models.MLData;
+import com.parse.ParseException;
 import com.parse.ParsePush;
+import com.parse.ParseQuery;
 
+/**
+ * User is redirected here after registering
+ * here the user selects if he wants notification
+ * we show the user what we think he will choose
+ * done by utilizing a logistic regression model
+ */
 public class NotificationSettingActivity extends AppCompatActivity {
     private static final String TAG = "NotificationSettingActivity";
     private TextView tvNotificationHelpText;
     private Button btnTurnOffNotification, btnTurnOnNotification;
+    int[] X_train;
+    int[] y_train;
+    double weight;
+    double bias;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,18 +33,47 @@ public class NotificationSettingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_notification_setting);
         setViews();
         setBtnLogic();
+        getMLInfo();
+        fitModel();
+        makePrediction();
+    }
 
-        int[] X_train = {83,86,77,93,35,86,92,49,21,62,27,90,59,63,26,40,26,72,36,68,67,29,82,30,62,23,67,35,29,22,58,69,67,93,56,42,29,73,21,19,84,37,98,24,70,26,91,80,56,73,62,70,96,81,25,84,27,36,46,29,57,24,95,82,45,67,34,64,43,50,87,76,78,88,84,51,54,99,32,60,76,68,39,26,86,94,39,95,70,34,78,67,97,92,52,56,80,86,41,65};
-        int[] y_train = {1,1,1,1,0,1,1,0,0,0,0,1,0,0,0,0,0,1,0,1,1,0,1,0,0,0,1,0,0,0,0,1,1,1,0,0,0,1,0,0,1,0,1,0,1,0,1,1,0,1,0,1,1,1,0,1,0,0,0,0,0,0,1,1,0,1,0,0,0,0,1,1,1,1,1,0,0,1,0,0,1,1,0,0,1,1,0,1,1,0,1,1,1,1,0,0,1,1,0,0,};
-
-        double weight = 50.0, bias = 0.0;
-        double[] weightAndBias = computeWeightAndBias(X_train, y_train, weight, bias);
-        weight = weightAndBias[0];
-        bias = weightAndBias[1];
-
+    /**
+     * uses adjusted weight and bias to make a prediction via
+     * predictSetting. then sets the text on the screen to show the prediction
+     */
+    private void makePrediction() {
         int choice = predictSetting(weight, bias, RegisterActivity.thisAge);
         if (choice==1) tvNotificationHelpText.setText("We think you would like to use notifications");
         else tvNotificationHelpText.setText("We think you would not like to use notifications");
+    }
+
+    /**
+     * sets initial weight and bias, then adjusts them to their correct
+     * value for the data using computeWeightAndBias
+     */
+    private void fitModel() {
+        weight = 50.0;
+        bias = 0.0;
+        double[] weightAndBias = computeWeightAndBias(X_train, y_train, weight, bias);
+        weight = weightAndBias[0];
+        bias = weightAndBias[1];
+    }
+
+    /**
+     * calls back4app database to get the training data
+     * after getting it it sets it to X_train and y_train
+     */
+    private void getMLInfo() {
+        ParseQuery<MLData> query = ParseQuery.getQuery(MLData.class);
+        MLData mldata = new MLData();
+        try {
+            mldata = query.find().get(0);
+        } catch (ParseException e) {
+            Log.e(TAG, e.toString());
+        }
+        X_train = mldata.getAges();
+        y_train = mldata.getChoices();
     }
 
     /**

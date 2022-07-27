@@ -11,7 +11,6 @@ import com.parse.ParsePush;
  * Connects to the back4app database
  * Registers the City model for later use
  *
- * Subscribes the user to the User channel
  * Sends notifications to Users when parkVeryPopulated
  * is called from visitParkFragment
  */
@@ -34,6 +33,7 @@ public class ParseApplication extends Application {
     }
 
     /**
+     * Sends a notification to the user channel
      *
      * @param parkName name of park to be displayed
      * @param amount number of people in that park

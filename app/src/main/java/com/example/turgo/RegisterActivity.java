@@ -13,7 +13,7 @@ import com.parse.SignUpCallback;
 
 /**
  * Takes in fields, creates a user with the information
- * on those fields, goes to MainActivity
+ * on those fields, goes to NotificationSettingActivity
  */
 public class RegisterActivity extends AppCompatActivity {
     private static final String TAG = "RegisterActivity";
@@ -32,7 +32,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     /**
      * Takes information from fills and signs up the user
-     * Takes you to main activity
+     * Takes you to NotificationSettingActivity
      */
     private void setBtnLogic() {
         btnRegister.setOnClickListener(new View.OnClickListener() {

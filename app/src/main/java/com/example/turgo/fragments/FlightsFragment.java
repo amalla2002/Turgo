@@ -104,7 +104,7 @@ public class FlightsFragment extends Fragment {
                 getFields();
 //                fillFlightCostsAndIteneraryArray();
 //                findHotelCost();
-                generateTestData(1);
+                generateTestData();
                 int[] thiz = {goOnIndices.get(0), goOnIndices.get(goOnIndices.size()-1)}, that = {leaveOnIndices.get(0), leaveOnIndices.get(leaveOnIndices.size()-1)};
                 double[] ans = findBestCombination(goingPrice, returningPrice, hotelPrice, thiz, that, minDays, maxDays);
                 tvBestCombination.setText("FOR " + String.valueOf(ans[0])+" YOU CAN GO TO " + dest +
@@ -128,43 +128,29 @@ public class FlightsFragment extends Fragment {
     /**
      * work around to Amadeus errors
      *
-     * @param testing different scenarios
+     * Airport: SEA to LCY
+     * arrival date: 08-04 to 08-05
+     * return date: 08-11 to 08-12
+     * staying at JW Marriott Grosvenor House London airport
+     * hotel id: MCLONGHM
      */
-    private void generateTestData(int testing) {
-        switch (testing) {
-            case 1:
-                goingPrice[195] = 200;
-                goingPrice[196] = 300;
-                goOnIndices.add(195);
-                goOnIndices.add(196);
-                returningPrice[202] = 300;
-                returningPrice[203] = 200;
-                leaveOnIndices.add(202);
-                leaveOnIndices.add(203);
-                for (int i = 0; i<hotelPrice.length-1; ++i) hotelPrice[i] = 150.0;
-                break;
-            case 2:
-                goingPrice[195] = 200;
-                goingPrice[196] = 300;
-                goOnIndices.add(195);
-                goOnIndices.add(196);
-                returningPrice[202] = 300;
-                returningPrice[203] = 200;
-                leaveOnIndices.add(202);
-                leaveOnIndices.add(203);
-                for (int i = 0; i<hotelPrice.length-1; ++i) hotelPrice[i] = 100.0;
-                break;
-            case 3:
-                goingPrice[195] = 200;
-                goingPrice[196] = 300;
-                goOnIndices.add(195);
-                goOnIndices.add(196);
-                returningPrice[202] = 300;
-                returningPrice[203] = 200;
-                leaveOnIndices.add(202);
-                leaveOnIndices.add(203);
-                for (int i = 0; i<hotelPrice.length-1; ++i) hotelPrice[i] = 1.0;
-        }
+    private void generateTestData() {
+        goingPrice[216] = 707.60;
+        goingPrice[217] = 1601.90;
+        goOnIndices.add(216);
+        goOnIndices.add(217);
+        returningPrice[223] = 1198.66;
+        returningPrice[224] = 1209.96;
+        leaveOnIndices.add(223);
+        leaveOnIndices.add(224);
+        hotelPrice[216] = 600.00;
+        hotelPrice[217] = 600.00;
+        hotelPrice[218] = 697.00;
+        hotelPrice[219] = 600.00;
+        hotelPrice[220] = 600.00;
+        hotelPrice[221] = 600.00;
+        hotelPrice[222] = 600.00;
+        hotelPrice[223] = 600.00;
     }
 
     /**

@@ -20,6 +20,7 @@ public class RegisterActivity extends AppCompatActivity {
     public static double thisAge;
     private EditText etUsername;
     private EditText etPassword;
+    private EditText etAge;
     private Button btnRegister;
 
     @Override
@@ -41,6 +42,7 @@ public class RegisterActivity extends AppCompatActivity {
                 ParseUser user = new ParseUser();
                 user.setUsername(etUsername.getText().toString());
                 user.setPassword(etPassword.getText().toString());
+                thisAge = Double.valueOf(etAge.getText().toString());
                 user.signUpInBackground(new SignUpCallback() {
                     @Override
                     public void done(ParseException e) {
@@ -48,6 +50,7 @@ public class RegisterActivity extends AppCompatActivity {
                             Log.e(TAG, e.toString());
                             return;
                         }
+                        Log.i(TAG, "going to notif?");
                         Intent i = new Intent(RegisterActivity.this, NotificationSettingActivity.class);
                         startActivity(i);
                         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
@@ -65,6 +68,7 @@ public class RegisterActivity extends AppCompatActivity {
     private void findViews() {
         etUsername = findViewById(R.id.etUsernameRegister);
         etPassword = findViewById(R.id.etPasswordRegister);
+        etAge = findViewById(R.id.etAgeRegister);
         btnRegister = findViewById(R.id.btnRegister);
     }
 }

@@ -3,14 +3,17 @@ package com.example.turgo;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import com.example.turgo.models.MLData;
-import com.parse.ParseException;
 import com.parse.ParsePush;
 import com.parse.ParseQuery;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
 
 /**
  * User is redirected here after registering
@@ -22,8 +25,9 @@ public class NotificationSettingActivity extends AppCompatActivity {
     private static final String TAG = "NotificationSettingActivity";
     private TextView tvNotificationHelpText;
     private Button btnTurnOffNotification, btnTurnOnNotification;
-    int[] X_train;
-    int[] y_train;
+    private MLData mlData;
+    double[] X_train;
+    double[] y_train;
     double weight;
     double bias;
 
@@ -31,11 +35,26 @@ public class NotificationSettingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification_setting);
+        System.loadLibrary("native-lib");
         setViews();
         setBtnLogic();
         getMLInfo();
-        fitModel();
-        makePrediction();
+
+        // make sure data is gathered and model is trained before trying to use it
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                fitModel();
+                Handler handler1 = new Handler();
+                handler1.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        makePrediction();
+                    }
+                }, 500);
+            }
+        }, 500);
     }
 
     /**
@@ -65,15 +84,14 @@ public class NotificationSettingActivity extends AppCompatActivity {
      * after getting it it sets it to X_train and y_train
      */
     private void getMLInfo() {
-        ParseQuery<MLData> query = ParseQuery.getQuery(MLData.class);
-        MLData mldata = new MLData();
         try {
-            mldata = query.find().get(0);
-        } catch (ParseException e) {
+            ParseQuery<MLData> query = ParseQuery.getQuery(MLData.class);
+            mlData = query.find().get(0);
+            X_train = mlData.getAges();
+            y_train = mlData.getChoices();
+        } catch (Exception e) {
             Log.e(TAG, e.toString());
         }
-        X_train = mldata.getAges();
-        y_train = mldata.getChoices();
     }
 
     /**
@@ -86,14 +104,14 @@ public class NotificationSettingActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 ParsePush.subscribeInBackground(ParseApplication.allUsers);
-                saveDataPoint(RegisterActivity.thisAge, 1);
+                saveDataPoint(RegisterActivity.thisAge, 1.0);
                 goMainActivity();
             }
         });
         btnTurnOffNotification.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveDataPoint(RegisterActivity.thisAge, 0);
+                saveDataPoint(RegisterActivity.thisAge, 0.0);
                 goMainActivity();
             }
         });
@@ -105,8 +123,14 @@ public class NotificationSettingActivity extends AppCompatActivity {
      * @param thisAge age of the person that just made the account
      * @param i decision, where 1 means the notification was turned on and 0 is the contrary
      */
-    private void saveDataPoint(double thisAge, int i) {
-
+    private void saveDataPoint(double thisAge, double i) {
+        List<Double> new_X_train = DoubleStream.of(X_train).boxed().collect(Collectors.toList());
+        List<Double> new_y_train = DoubleStream.of(y_train).boxed().collect(Collectors.toList());
+        new_X_train.add(thisAge);
+        new_y_train.add(i);
+        mlData.setAges(new_X_train);
+        mlData.setChoices(new_y_train);
+        mlData.saveInBackground();
     }
 
     /**
@@ -131,14 +155,13 @@ public class NotificationSettingActivity extends AppCompatActivity {
     /**
      * Takes in weight and bias which are transformed via gradient descent in order to help make predictions
      *
-     *
-     * @param x_train
-     * @param y_train
-     * @param w weight assgined to feature, since there is only 1 feature this is a double instead of a double array
-     * @param b bias for control
+     * @param X_train_in
+     * @param y_train_in
+     * @param weight_in weight assgined to feature, since there is only 1 feature this is a double instead of a double array
+     * @param bias_in bias for control
      * @return weight and bias used for predictions, or in simpler terms: slope and y intercept
      */
-    private native double[] computeWeightAndBias(int[] x_train, int[] y_train, double w, double b);
+    private native double[] computeWeightAndBias(double[] X_train_in, double[] y_train_in, double weight_in, double bias_in);
 
     /**
      * Makes a prediction utilizing the weight and bias of the model.

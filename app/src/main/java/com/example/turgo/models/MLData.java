@@ -16,19 +16,19 @@ public class MLData extends ParseObject {
 
     public MLData() {}
 
-    public int[] getAges() {
-        List<Integer> that = getList(KEY_AGES);
-        return that.stream().mapToInt(Integer::intValue).toArray();
+    public double[] getAges() {
+        List<Number> that = getList(KEY_AGES);
+        return that.stream().mapToDouble(Number::doubleValue).toArray();
     }
-    public int[] getChoices() {
-        List<Integer> that = getList(KEY_CHOICES);
-        return that.stream().mapToInt(Integer::intValue).toArray();
+    public double[] getChoices() {
+        List<Number> that = getList(KEY_CHOICES);
+        return that.stream().mapToDouble(Number::doubleValue).toArray();
     }
 
-    public void setAges(List<Integer> ages) {
+    public void setAges(List<Double> ages) {
         put(KEY_AGES, ages);
     }
-    public void setChoices(List<Integer> choices) {
+    public void setChoices(List<Double> choices) {
         put(KEY_CHOICES, choices);
     }
 }

@@ -152,8 +152,8 @@ Java_com_example_turgo_fragments_FlightsFragment_findBestCombination(JNIEnv *env
 extern "C"
 JNIEXPORT jdoubleArray JNICALL
 Java_com_example_turgo_NotificationSettingActivity_computeWeightAndBias(JNIEnv *env, jobject thiz,
-                                                                        jintArray X_train_in,
-                                                                        jintArray y_train_in,
+                                                                        jdoubleArray X_train_in,
+                                                                        jdoubleArray y_train_in,
                                                                         jdouble weight_in,
                                                                         jdouble bias_in) {
     jsize m_in = env->GetArrayLength(X_train_in);

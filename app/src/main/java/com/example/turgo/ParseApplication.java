@@ -2,6 +2,7 @@ package com.example.turgo;
 
 import android.app.Application;
 import com.example.turgo.models.City;
+import com.example.turgo.models.MLData;
 import com.parse.Parse;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
@@ -20,6 +21,7 @@ public class ParseApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        ParseObject.registerSubclass(MLData.class);
         ParseObject.registerSubclass(City.class);
         Parse.initialize(new Parse.Configuration.Builder(this)
                 .applicationId("3fHfoZJ4dbkd7HUWRcdKQvvERczTduLpDOGAjzQV")

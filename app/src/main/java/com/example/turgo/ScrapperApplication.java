@@ -1,5 +1,7 @@
 package com.example.turgo;
 
+import android.util.Log;
+
 import com.example.turgo.fragments.PlacesFragment;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -19,7 +21,7 @@ public class ScrapperApplication extends Thread {
     String urlPath;
 
     public ScrapperApplication(String url) {
-        this.urlPath += url;
+        this.urlPath = url;
     }
 
     @Override
@@ -28,6 +30,7 @@ public class ScrapperApplication extends Thread {
         try {
             //get page and extract all paragraphs in main body
             String url = urlBase+urlPath;
+            Log.i("ThisTag", url);
             final Document document = Jsoup.connect(url).get();
             Element body = document.getElementById("mw-content-text");
             String paragraphs = body.getElementsByTag("p").toString();

@@ -226,7 +226,6 @@ public class PlacesFragment extends Fragment implements OnMapReadyCallback {
                         }
                     }
                 });
-
             }
         }
         @Override

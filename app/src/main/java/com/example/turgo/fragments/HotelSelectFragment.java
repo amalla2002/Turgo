@@ -15,6 +15,7 @@ import com.example.turgo.adapter.HotelAdapter;
 import org.javatuples.Pair;
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  * Gets hotels from AmadeusApplication
  * Displays them using a recycler view and HotelAdapter
@@ -46,7 +47,7 @@ public class HotelSelectFragment extends Fragment {
         adapter = new HotelAdapter(getContext(), allHotels);
         rvHotels.setAdapter(adapter);
         rvHotels.setLayoutManager(new LinearLayoutManager(getContext()));
-        allHotels.addAll(AmadeusApplication.fetchHotels("JFK"));
+        allHotels.addAll(AmadeusApplication.fetchHotels(FlightsFragment.hotelsInThisCity));
         adapter.notifyDataSetChanged();
     }
 }

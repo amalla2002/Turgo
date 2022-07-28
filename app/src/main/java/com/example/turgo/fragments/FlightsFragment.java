@@ -39,6 +39,7 @@ import java.util.stream.LongStream;
  */
 public class FlightsFragment extends Fragment {
     private static final String TAG  = "FlightsFragment";
+    public static String hotelsInThisCity;
     private List<LocalDate> goOn, leaveOn;
     private String origin, dest, currencyForHotel;
     private Boolean editingGoOn = false;
@@ -119,6 +120,7 @@ public class FlightsFragment extends Fragment {
         btnHotel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                hotelsInThisCity = etDestination.getText().toString();
                 FragmentManager fragmentManager = getParentFragmentManager();
                 fragmentManager.beginTransaction().replace(R.id.flContainer, new HotelSelectFragment()).commit();
             }

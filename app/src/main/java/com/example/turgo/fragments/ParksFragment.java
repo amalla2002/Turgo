@@ -31,7 +31,7 @@ public class ParksFragment extends Fragment {
     private static final String TAG = "ParksFragment";
     private TextView tvPeopleAmount;
     private SeekBar sbPeopleAmount;
-    private final int MAXPEOPLE = 1000;
+    private final int MAXPEOPLE = 100;
     private int[] segTree;
     private RecyclerView rvParks;
     private ParkAdapter adapter;
@@ -90,7 +90,7 @@ public class ParksFragment extends Fragment {
         List<String> names = myCity.getParks();
         List<String> hours = myCity.getHours();
         List<Number> entireTree = Arrays.stream(myCity.getTree()).boxed().collect(Collectors.toList());
-        List<Number> people = entireTree.subList((entireTree.size()-24)/2, (entireTree.size()-24)/2+names.size());
+        List<Number> people = entireTree.subList((entireTree.size()-MainActivity.segmentationFaultPrecaution)/2, (entireTree.size()-MainActivity.segmentationFaultPrecaution)/2+names.size());
         List<Number> lats = myCity.getLatitude();
         List<Number> lng = myCity.getLongitude();
         allParks = new ArrayList<>();

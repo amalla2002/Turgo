@@ -33,7 +33,7 @@ public class VisitParkFragment extends Fragment {
     private EditText etNumOfPeople;
     private Quintet<String, String, Number, Number, Number> park;
     private City myCity;
-    private static final Integer INF = (int) 1e9+7, notifyForThisAmountOfPeople = 500;
+    private static final Integer INF = (int) 1e9+7, notifyForThisAmountOfPeople = 50;
 
     public VisitParkFragment() {}
 

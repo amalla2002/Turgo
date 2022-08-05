@@ -34,7 +34,6 @@ public class AmadeusApplication extends Application {
         super.onCreate();
     }
 
-
     /**
      * Fetches plane price data for a given dates and parses it
      *

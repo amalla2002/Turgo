@@ -128,7 +128,7 @@ public class FlightsFragment extends Fragment {
     }
 
     /**
-     * work around to Amadeus errors
+     * work around to Amadeus errors for demo
      *
      * Airport: SEA to LCY
      * arrival date: 08-04 to 08-05

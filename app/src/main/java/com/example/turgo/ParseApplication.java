@@ -24,8 +24,8 @@ public class ParseApplication extends Application {
         ParseObject.registerSubclass(MLData.class);
         ParseObject.registerSubclass(City.class);
         Parse.initialize(new Parse.Configuration.Builder(this)
-                .applicationId("3fHfoZJ4dbkd7HUWRcdKQvvERczTduLpDOGAjzQV")
-                .clientKey("eQ198frFPoMxkoKMl8HeOaRdtqCJAFTg1uxvFikO")
+                .applicationId("your application id")
+                .clientKey("your client key")
                 .server("https://parseapi.back4app.com")
                 .build()
         );

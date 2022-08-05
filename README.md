@@ -1,7 +1,3 @@
-Outdated
-Original App Design Project - README Template
-===
-
 # Turgo
 
 ## Table of Contents
@@ -12,20 +8,15 @@ Original App Design Project - README Template
 
 ## Overview
 ### Description
-You can look up a place, go (with directions) and here a description of the place. 
+You can look up a place, go (with directions) and hear a description of the place. 
 You can see a list of parks and how many registered users are in the park. 
 A filter is in place in case you do not want to go to a place with too many people. 
+You can also get directions to a desired park in this screen.
+You can also opt into notifications, getting one every time a park is decently crowded.
 You can find the cheapest combination for a trip.
-Select the range of days on which you are willing to go and return, the amount of days you want to spend and the hotel on which you want to stay. 
+Select the range of days on which you are willing to go and return, the amount of days you want to spend and the hotel on which you want to stay.
 
-### App Evaluation
-[Evaluation of your app across the following attributes]
-- **Category:** Discovery
-- **Mobile:** Map services / Audio
-- **Story:** 
-- **Market:** 
-- **Habit:** 
-- **Scope:**
+Demo: https://drive.google.com/file/d/16Se7EVXdUvJYx5xvcN4Gpjk0xcUgNo4V/view?usp=sharing
 
 ## Product Spec
 
@@ -35,27 +26,32 @@ Select the range of days on which you are willing to go and return, the amount o
 
 * User has their own account
 * Can search up a place and listen to a brief description
-* Can see parks and filter
+* Can see parks, filter and get directions
 
 **Optional Nice-to-have Stories**
 
-* Can see flights, being able to select a range of dates for departure, return and how many days you want your trip to be. Cheapest flight will be presented
+* Can select airports along with a range of dates for arrival, departure and how many days you want your trip to be, along with the hotel. Cheapest flight will be presented
+* Can opt into notifications
+* Gets suggestion for notification setting, based on data from previous users
 
 ### 2. Screen Archetypes
 
 * Login/Register
     * User has their own account
+    * Can opt into notifications
 * MenuHub
     * Switch tabs
 * Places 
-    * Can search up places, go to them and listen to description.
+    * Can search up places, go to them and listen to a brief description
 * Parks 
-    * Can see parks and filter by occupancy
+    * Can see parks and filter by occupancy and get directions
+* Flights 
+    * Can select airports along with a range of dates for arrival, departure and how many days you want your trip to be, along with the hotel. Cheapest flight will be presented
 * Profile 
     * Can logout
 ### 3. Navigation
 
-**Tab Navigation** (Screen to Screen)
+**Tab Navigation** 
 
 * Login/Register
    * MenuHub
@@ -66,8 +62,8 @@ Select the range of days on which you are willing to go and return, the amount o
   
 
 ## Wireframes
+(Outdated)
 [Scanned Documents (1).pdf](https://github.com/amalla2002/Turgo/files/8902711/Scanned.Documents.1.pdf)
-
 
 ## Schema 
 
@@ -82,7 +78,7 @@ City
 | objectId  | String  | The id of the object |
 | updatedAt  | Date  | Date of last update |
 | createdAt  | Date | Date of creation |
-| ACL | ACL | ACL? |
+| ACL | ACL | Access Control List |
 | location  | String  | Name of the city |
 | parks  | Array  | Park names |
 | tree | Array | Min Seg Tree with how many people are in each park |
@@ -98,18 +94,26 @@ User
 | authData  | Object  | Authorization data |
 | updatedAt  | Date | Date of last update |
 | createdAt | Date | Date of creation |
-| ACL  | ACL  | ACL? |
+| ACL  | ACL  | Access Control List |
 | emailVerified  | Boolean  | Verification status |
 | email  | String | Email address |
-| Avatar | File | Profile image |
 | username  | String  | Nickname of the user |
 | password  | String  | User key to access account |
 
+MLData
+
+| Property        | Type          | Description |
+| ------------- | ------------- | ------------|
+| objectId  | String  | The id of the object |
+| authData  | Object  | Authorization data |
+| updatedAt  | Date | Date of last update |
+| createdAt | Date | Date of creation |
+| ACL  | ACL  | Access Control List |
+| ages  | Array  | Integer array containing user ages at time of register |
+| choices  | Array | Integer array containing user's decision to opt into push notification (1 means the user opt in) |
 
 ### Networking
 - Google Maps Directions API
 - Google Maps Places SDK Place Autocomplete
 - Seattle Department of Parks and Recreation API
-- [Add list of network requests by screen ]
-- [Create basic snippets for each Parse network request]
-- [OPTIONAL: List endpoints if using existing API such as Yelp]
+- Amadeus API (Hotel list, Hotel offers, Flight offers)
